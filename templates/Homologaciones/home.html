@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+
+{% block head_content %}
+    <title>Homologaciones</title>
+{% endblock%}
+{% block container %}
+
+<div class="mt-5">
+<ul class="list-group">
+<li class="list-group-item text-center" >
+<a class="active text-dark" href="{% url "Homologaciones:homologaciones" %}"> Homologaciones </a>       </li>
+
+<li class="list-group-item text-center">
+<a class="active text-dark" href="{% url "Dispositivos:dispositivo" %}"> Dispositivos </a>    </li>
+<li class="list-group-item text-center">Caracteristicas</li>
+<li class="list-group-item text-center">Fabricantes</li>
+</ul>
+</div>
+
+
+{% if messages %}
+<ul class="mt-5 alert alert-primary text-center">
+    {% for message in messages %}
+    <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}

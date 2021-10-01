@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+<title>Crear homologacion</title>
+
+{% endblock %}
+
+{% block container %}
+    <div class="container">
+        <div class="row justify-content-md-center">
+            <div class="col-6 pt-3 pb-3" id="profile-box">
+                <h4 class="mb-4 text-center">Nueva homologacion!</h4>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+                    <div class="form-group">
+                      <label for="cars">Choose a car:</label>
+                            <select name="pais" >
+                              {% for choice in paises%}
+                              <option value= "{{ choice }}"> {{ choice }}</option>
+                              {% endfor %}
+                                <option value= "ARG2"> ARG2 </option>
+                              </select>
+                        <div class="invalid-feedback">
+                            {% for error in form.pais.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-5">Publish!</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
