@@ -13,6 +13,7 @@ from Homologaciones.forms import paisForm
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from Dispositivos.models import dispositivo as dispositivo_id
+from Dispositivos.models import dispositivo_atributo
 # Create your views here.
 
 @login_required()
@@ -24,9 +25,29 @@ def homologaciones(request):
 
     return render(request, 'Homologaciones/homologaciones.html')
 
+class HomologacionDetailView(LoginRequiredMixin, DetailView):
+
+    template_name = 'Homologaciones/detail.html'
+
+    queryset = referencia.objects.all()
+    slug_field = 'pk'
+    slug_url_kwarg = 'pk'
+    queryset = referencia.objects.all()
+    context_object_name = 'pk'
+
+    def get_object(self, queryset=None):
+        self.obj = super().get_object()
+        return self.obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['atributos'] = queryset=dispositivo_atributo.objects.filter(id_dispositivo=self.obj.id_dispositivo)
+        return context
+
+
 class CategoryListView(ListView):
-    model = Homologacion
-    template_name = 'Homologaciones/list.html'
+    model = referencia
+    template_name = 'Homologaciones/list2.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -42,18 +63,17 @@ class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 
 
     def form_valid(self, form):
-        print("holiiiiiiiii")
         form.instance.user = self.request.user
         form.instance.profile = self.request.user.profile
         print(form)
         form.save()
+        self.new_refer=form.save()
         messages.success(self.request, 'Form submission successful')
         return super(Createreferencia, self).form_valid(form)
 
     def get_success_url(self):
-
-        return reverse('Homologaciones:home')
-
+        return reverse('Homologaciones:detail', kwargs={ "pk": self.new_refer.pk})
+        #return render(request, 'Homologaciones/detail', 1)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

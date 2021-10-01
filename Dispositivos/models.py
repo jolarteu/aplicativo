@@ -19,3 +19,9 @@ class dispositivo(models.Model):
 class dispositivo_atributo(models.Model):
     id_dispositivo=models.ForeignKey(dispositivo,on_delete=models.CASCADE)
     id_atributo=models.ForeignKey(atributo,on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together=[['id_dispositivo', 'id_atributo']]
+
+    def __str__(self):
+        return self.id_atributo.name

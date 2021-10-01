@@ -1,0 +1,27 @@
+
+{% extends "base.html" %}
+
+{% block head_content %}
+    <title>Homologaciones</title>
+{% endblock%}
+{% block container %}
+<div class="container">
+
+
+
+  {% for choice in atributos%}
+  <h1>  {{ choice}} </h1>
+  {% endfor %}
+
+  <h1>  {{ x}} </h1>
+
+
+  {% if messages %}
+  <ul class="mt-5 alert alert-primary text-center">
+      {% for message in messages %}
+      <li  {% if message.tags %} class=" {{ message.tags }} " {% endif %}> {{ message }} </li>
+      {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

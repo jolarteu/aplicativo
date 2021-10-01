@@ -31,6 +31,11 @@ urlpatterns = [
         view = views.Createreferencia.as_view(),
         name='new'
     ),
+    path(
+        route = 'consultar/<slug:pk>',
+        view = views.HomologacionDetailView.as_view(),
+        name='detail'
+    ),
     # path(
     #     route = 'new',
     #     view = views.CreateHomologacion.as_view(),

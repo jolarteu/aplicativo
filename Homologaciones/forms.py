@@ -19,7 +19,7 @@ class  HomologacionForm(forms.ModelForm):
 
         model = Homologacion
         #fields= ['profile','id_dispositivo', 'refer', 'pais', 'name',  'document',  'estado', 'tipo', 'fabricante']
-        fields= ['profile', 'document',  'tipo', 'resultado']
+        fields= ['profile', 'refer', 'document',  'tipo', 'resultado']
 
 class  paisForm(forms.ModelForm):
 
