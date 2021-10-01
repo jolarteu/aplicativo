@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+<title>Crear homologacion</title>
+
+{% endblock %}
+
+{% block container %}
+
+    <div class="container mt-0 mb-5">
+        <div class="row justify-content-md-center">
+            <div class="col-6 pt-3 pb-3" id="profile-box">
+                <h4 class="mb-4 text-center">Nueva homologacion!</h4>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <input type="hidden" name="profile" value="{{user.profile.id}}" />
+
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.refer.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="refer"
+                            placeholder="referencia"
+                            value=""
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.refer.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+                    <input type="hidden" name="pais" value="{{user.profile.country}}" />
+
+                    <div class="form-group">
+                        <input
+                            class="form-control {% if form.name.errors %}is-invalid{% endif %}"
+                            type="text"
+                            name="name"
+                            placeholder="nombre"
+                            value=""
+                        >
+                        <div class="invalid-feedback">
+                            {% for error in form.name.errors %}{{ error }}{% endfor %}
+                        </div>
+                    </div>
+
+
+                    <div class="form-group d-block">
+                              <label >Fabricante:</label>
+                              <select class="selectpicker " aria-label=".form-select-lg example" name="fabricante">
+                                {% for choice in fabricantes%}
+                                <option value= "{{ choice}}"> {{ choice }}</option>
+                                {% endfor %}
+                                </select>
+                          <div class="invalid-feedback">
+                           {% for error in form.fabricante.errors %}{{ error }}{% endfor %}
+                          </div>
+                    </div>
+
+                    <div class="form-group">
+                              <label >Tipo de dispositivo:</label>
+                              <select class="selectpicker" aria-label=".form-select-lg example" name="id_dispositivo">
+                                {% for choice in dispositivos%}
+                                <option value= "{{ choice.id }}"> {{ choice }}</option>
+                                {% endfor %}
+                                </select>
+                          <div class="invalid-feedback">
+                           {% for error in form.id_dispositivo.errors %}{{ error }}{% endfor %}
+                          </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-5">Publish!</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -47,24 +47,30 @@ class fabricante(models.Model):
     def __str__(self):
         return self.fabricante
 
-
-
-class Homologacion(models.Model):
+class referencia(models.Model):
+    id_referencia = models.BigAutoField(primary_key=True)
     profile=models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
     refer=models.CharField(max_length=50, blank=False)
     id_dispositivo=models.ForeignKey(dispositivo, default="", on_delete=models.CASCADE)
     name = models.CharField(max_length=50, blank=False)
-    document= models.FileField(upload_to='homologacion/files')
     created= models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     pais=models.ForeignKey(pais, default="", on_delete=models.CASCADE)
+    fabricante=models.ForeignKey(fabricante, default="", on_delete=models.CASCADE)
+    class Meta:
+        unique_together = [['refer', 'id_dispositivo', 'pais']]
+
+class Homologacion(models.Model):
+    refer=models.ForeignKey(referencia, null=True,on_delete=models.CASCADE)
+    profile=models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
+    document= models.FileField(upload_to='homologacion/files')
+    created= models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
     estado=models.ForeignKey(estado,  default="En curso", on_delete=models.CASCADE)
     resultado=models.ForeignKey(resultado, default="Sin terminar", on_delete=models.CASCADE )
     tipo=models.ForeignKey(tipo, default="", on_delete=models.CASCADE)
-    fabricante=models.ForeignKey(fabricante, default="", on_delete=models.CASCADE)
 
-    class Meta:
-        unique_together = [['refer', 'id_dispositivo', 'pais']]
+
 
 #
 # class HistorialHomologaciones(Homologacion):

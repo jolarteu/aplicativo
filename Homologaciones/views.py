@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import  LoginRequiredMixin
 # from post.forms import PostForm
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse
-from Homologaciones.models import Homologacion, pais, fabricante, tipo
+from Homologaciones.models import Homologacion, pais, fabricante, tipo, referencia
 from Homologaciones.forms import paisForm
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -33,12 +33,11 @@ class CategoryListView(ListView):
         context['title'] = 'Lista homologaciones'
         return context
 
+class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 
-class CreateHomologacion(LoginRequiredMixin,SuccessMessageMixin, CreateView):
-
-    model = Homologacion
-    fields = [ 'profile','id_dispositivo', 'refer', 'pais', 'name',  'document', 'tipo', 'fabricante']
-    template_name = 'Homologaciones/new.html'
+    model = referencia
+    fields = [ 'profile','id_dispositivo', 'refer', 'pais', 'name',  'fabricante']
+    template_name = 'Homologaciones/new4.html'
     print("holaaaaaaa")
 
 
@@ -49,7 +48,7 @@ class CreateHomologacion(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         print(form)
         form.save()
         messages.success(self.request, 'Form submission successful')
-        return super(CreateHomologacion, self).form_valid(form)
+        return super(Createreferencia, self).form_valid(form)
 
     def get_success_url(self):
 
@@ -58,10 +57,38 @@ class CreateHomologacion(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tipos'] = queryset=tipo.objects.all()
         context['fabricantes'] = queryset=fabricante.objects.all()
         context['dispositivos'] = queryset=dispositivo_id.objects.all()
         return context
+
+# class CreateHomologacion(LoginRequiredMixin,SuccessMessageMixin, CreateView):
+#
+#     model = Homologacion
+#     fields = [ 'profile','id_dispositivo', 'refer', 'pais', 'name',  'document', 'tipo', 'fabricante']
+#     template_name = 'Homologaciones/new.html'
+#     print("holaaaaaaa")
+#
+#
+#     def form_valid(self, form):
+#         print("holiiiiiiiii")
+#         form.instance.user = self.request.user
+#         form.instance.profile = self.request.user.profile
+#         print(form)
+#         form.save()
+#         messages.success(self.request, 'Form submission successful')
+#         return super(CreateHomologacion, self).form_valid(form)
+#
+#     def get_success_url(self):
+#
+#         return reverse('Homologaciones:home')
+#
+#
+#     def get_context_data(self, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['tipos'] = queryset=tipo.objects.all()
+#         context['fabricantes'] = queryset=fabricante.objects.all()
+#         context['dispositivos'] = queryset=dispositivo_id.objects.all()
+#         return context
 
 class Createpais(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 

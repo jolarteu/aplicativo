@@ -1,21 +1,29 @@
 from django.contrib import admin
-from  Homologaciones.models import Homologacion, pais, estado, resultado, tipo, fabricante
+from Homologaciones.models import Homologacion, pais, estado, resultado, tipo, fabricante, referencia
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import  User
 # Register your models here.
+
+#
+@admin.register(referencia)
+class  referenciaAdmin(admin.ModelAdmin):
+
+
+    list_display =('refer', 'profile',  'name', 'created',
+                    'modified','fabricante')
 
 
 @admin.register(Homologacion)
 class  HomologacionAdmin(admin.ModelAdmin):
 
 
-    list_display =('id_dispositivo', 'profile', 'refer', 'pais', 'name',  'document', 'created',
-                    'modified', 'estado', 'tipo', 'fabricante')
+    list_display =('refer', 'profile',  'document', 'created',
+                    'modified', 'estado', 'tipo')
 
-    # list_display_links = ('pk')
-
-    list_editable=('name',  'document',
-                     'estado', 'tipo', 'fabricante')
+#     # list_display_links = ('pk')
+#
+#     list_editable=('name',  'document',
+#                      'estado', 'tipo', 'fabricante')
 
     # search_fields=('title')
 

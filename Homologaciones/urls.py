@@ -28,8 +28,13 @@ urlpatterns = [
     ),
     path(
         route = 'new',
-        view = views.CreateHomologacion.as_view(),
+        view = views.Createreferencia.as_view(),
         name='new'
     ),
+    # path(
+    #     route = 'new',
+    #     view = views.CreateHomologacion.as_view(),
+    #     name='new'
+    # ),
 
 ]
