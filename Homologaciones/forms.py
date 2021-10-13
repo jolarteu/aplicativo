@@ -36,5 +36,3 @@ class  paisForm(forms.ModelForm):
 
         model = pais
         fields= ['pais',]
-
-paisFormSet = modelformset_factory(pais, fields=('pais',),)

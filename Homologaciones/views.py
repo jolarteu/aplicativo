@@ -4,6 +4,8 @@ from  datetime import datetime
 from django.contrib.auth.decorators import login_required #pide iniciar seccion
 from django.views.decorators.cache import cache_control, never_cache
 from django.contrib.auth.mixins import  LoginRequiredMixin
+from django.forms import modelformset_factory
+
 # from post.models import Post
 # from post.forms import PostForm
 from django.views.generic import ListView, DetailView, CreateView
@@ -15,7 +17,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from Dispositivos.models import dispositivo as dispositivo_id
 from Dispositivos.models import dispositivo_atributo
 from django.views.generic.edit import FormMixin
-from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm, paisFormSet
+from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm
 # Create your views here.
 from django.http import HttpResponseRedirect
 
@@ -177,20 +179,18 @@ class Createpais(LoginRequiredMixin, SuccessMessageMixin, CreateView):
     form_class= paisForm
     template_name = 'Homologaciones/paises.html'
 
-    # def form_valid(self, form):
-    #     form.save()
-    #     messages.success(self.request, 'Form submission successful')
-    #     return super(Createpais, self).form_valid(form)
 
 
     def get_context_data(self, **kwargs):
+        self.paisFormSet = modelformset_factory(pais, fields=('pais',),extra=pais.objects.all().count())
         context = super(Createpais, self).get_context_data(**kwargs)
-        #context['formset'] = paisFormSet(queryset=pais.objects.none())
-        context['formset'] = paisFormSet(extra=3)
+        context['formset'] = self.paisFormSet(queryset=pais.objects.none())
         return context
 
     def post(self, request, *args, **kwargs):
-        formset = paisFormSet(request.POST)
+        self.paisFormSet = modelformset_factory(pais, fields=('pais',),extra=pais.objects.all().count())
+
+        formset = self.paisFormSet(request.POST)
         if formset.is_valid():
             return self.form_valid(formset)
 
