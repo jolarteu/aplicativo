@@ -1,6 +1,7 @@
 
 
 from django import forms
+from django.forms import modelformset_factory
 
 from Homologaciones.models import Homologacion, pais, referencia, atributo_elemento_h
 
@@ -35,3 +36,5 @@ class  paisForm(forms.ModelForm):
 
         model = pais
         fields= ['pais',]
+
+paisFormSet = modelformset_factory(pais, fields=('pais',),)

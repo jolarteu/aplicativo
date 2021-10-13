@@ -28,7 +28,7 @@ urlpatterns = [
     ),
     path(
         route = 'new',
-        view = views.Createreferencia.as_view(),
+        view = views.Createpais.as_view(),
         name='new'
     ),
     path(

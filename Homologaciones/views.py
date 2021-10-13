@@ -15,8 +15,9 @@ from django.contrib.messages.views import SuccessMessageMixin
 from Dispositivos.models import dispositivo as dispositivo_id
 from Dispositivos.models import dispositivo_atributo
 from django.views.generic.edit import FormMixin
-from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms
+from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm, paisFormSet
 # Create your views here.
+from django.http import HttpResponseRedirect
 
 @login_required()
 def home(request):
@@ -88,10 +89,6 @@ class HomologacionListView(DetailView):
     template_name = 'Homologaciones/terminar.html'
 
     queryset = referencia.objects.all()
-    slug_field = 'pk'
-    slug_url_kwarg = 'pk'
-    queryset = referencia.objects.all()
-    context_object_name = 'pk'
 
     def get_object(self, queryset=None):
         self.obj = super().get_object()
@@ -100,7 +97,7 @@ class HomologacionListView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Lista homologaciones'
-        context['object_list']=Homologacion.objects.all()
+        context['object_list']=Homologacion.objects.filter(refer=self.obj.pk)
         return context
 
 class CategoryListView(ListView):
@@ -177,22 +174,39 @@ class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 class Createpais(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     model = pais
-    fields = [ 'pais',]
-    template_name = 'Homologaciones/new3.html'
+    form_class= paisForm
+    template_name = 'Homologaciones/paises.html'
 
-    def form_valid(self, form):
-        print("holiiiiiiiii")
+    # def form_valid(self, form):
+    #     form.save()
+    #     messages.success(self.request, 'Form submission successful')
+    #     return super(Createpais, self).form_valid(form)
 
-        # form.instance.User = self.request.User
-        # print(self.request.User)
-        form.save()
-        messages.success(self.request, 'Form submission successful')
-        return super(Createpais, self).form_valid(form)
-
-    def get_success_url(self):
-        return reverse('Homologaciones:home')
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['paises'] = queryset=pais.objects.all()
+        context = super(Createpais, self).get_context_data(**kwargs)
+        #context['formset'] = paisFormSet(queryset=pais.objects.none())
+        context['formset'] = paisFormSet(extra=3)
         return context
+
+    def post(self, request, *args, **kwargs):
+        formset = paisFormSet(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+
+    def form_valid(self, formset):
+        instances = formset.save()
+        for instance in instances:
+            print("prubeaaaaaa")
+            instance.save()
+        #return super(Createpais, self).form_valid(form)
+        #return HttpResponseRedirect('Homologaciones:home')
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+         return reverse('Homologaciones:home')
+
+    # def get_context_data(self, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     context['paises'] = queryset=pais.objects.all()
+    #     return context

@@ -18,10 +18,10 @@
                 <thead>
                   <tr>
                       <th scope="col" style="width: 10%;">referencia</th>
-                      <th scope="col" style="width: 10%;">creador</th>
-                      <th scope="col" style="width: 15%;">creacion</th>
+                      <th scope="col" style="width: 15%;">creador</th>
+                      <th scope="col" style="width: 10%;">creacion</th>
+                      <th scope="col" style="width: 10%;">estado</th>
                       <th scope="col" style="width: 10%;">opciones</th>
-
 
                   </tr>
                 </thead>
@@ -29,10 +29,11 @@
                   {% for c in object_list %}
 
                       <tr>
-                          <td> {{ c.pk }}  </td>
                           <td> {{ c.refer }} </td>
                           <td>{{ c.profile }}</td>
                           <td>{{ c.created }}</td>
+                          <td>{{ c.estado}}</td>
+
                           <td>
                               <button type="button" class="btn btn-warning btn-xs btn-flat">
                                   <i class="fas fa-edit"></i>
