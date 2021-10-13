@@ -1,5 +1,5 @@
 from django.contrib import admin
-from Homologaciones.models import Homologacion, pais, estado, resultado, tipo, fabricante, referencia
+from Homologaciones.models import Homologacion, pais, estado, resultado, tipo, fabricante, referencia, atributo_elemento_h
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import  User
 # Register your models here.
@@ -12,12 +12,19 @@ class  referenciaAdmin(admin.ModelAdmin):
     list_display =('refer', 'profile',  'name', 'created',
                     'modified','fabricante')
 
+@admin.register(atributo_elemento_h)
+class  referenciaAdmin(admin.ModelAdmin):
+
+
+    list_display =('atributo', 'Homologacion',  'valor', 'document',
+                    'profile')
+
 
 @admin.register(Homologacion)
 class  HomologacionAdmin(admin.ModelAdmin):
 
 
-    list_display =('refer', 'profile',  'document', 'created',
+    list_display =('refer', 'profile', 'created',
                     'modified', 'estado', 'tipo')
 
 #     # list_display_links = ('pk')

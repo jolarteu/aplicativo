@@ -33,9 +33,19 @@ urlpatterns = [
     ),
     path(
         route = 'consultar/<slug:pk>',
-        view = views.HomologacionDetailView.as_view(),
+        view = views.HomologacionListView.as_view(),
         name='detail'
     ),
+    # path(
+    #     route = 'consultar/<slug:pk>',
+    #     view = views.HomologacionDetailView.as_view(),
+    #     name='detail'
+    # ),
+    # path(
+    #     route = 'homologacion/<slug:pk>',
+    #     view = views.CreateHomologacion.as_view(),
+    #     name='homologacion'
+    # ),
     # path(
     #     route = 'new',
     #     view = views.CreateHomologacion.as_view(),

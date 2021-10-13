@@ -1,8 +1,8 @@
 from django.db import models
 from  django.contrib.auth.models import User
-from  Dispositivos.models import dispositivo
+from  Dispositivos.models import dispositivo, dispositivo_atributo
 from Users.models import Profile
-
+from django.db.models.signals import post_save
 
 class pais(models.Model):
     pais = models.CharField(max_length=50, blank=False, primary_key=True)
@@ -60,16 +60,32 @@ class referencia(models.Model):
     class Meta:
         unique_together = [['refer', 'id_dispositivo', 'pais']]
 
+    def __str__(self):
+        return (str(self.refer)+"_"+str(self.pais))
+
 class Homologacion(models.Model):
     refer=models.ForeignKey(referencia, null=True,on_delete=models.CASCADE)
     profile=models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
-    document= models.FileField(upload_to='homologacion/files')
     created= models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
     estado=models.ForeignKey(estado,  default="En curso", on_delete=models.CASCADE)
     resultado=models.ForeignKey(resultado, default="Sin terminar", on_delete=models.CASCADE )
     tipo=models.ForeignKey(tipo, default="", on_delete=models.CASCADE)
 
+    def __str__(self):
+        return str(self.refer)+"_"+str(self.pk)
+
+class atributo_elemento_h(models.Model):
+    atributo=models.ForeignKey(dispositivo_atributo, on_delete=models.CASCADE)
+    Homologacion=models.ForeignKey(Homologacion, on_delete=models.CASCADE)
+    valor=models.CharField(max_length=200, blank=True)
+    document= models.FileField(upload_to='homologacion/files', blank=True)
+    profile= models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
+
+
+def crear_homologacion(sender, instance, **kwargs):
+    profile=instance.profile
+    refer=instance.refer
 
 
 #

@@ -8,12 +8,14 @@ from django.contrib.auth.mixins import  LoginRequiredMixin
 # from post.forms import PostForm
 from django.views.generic import ListView, DetailView, CreateView
 from django.urls import reverse
-from Homologaciones.models import Homologacion, pais, fabricante, tipo, referencia
+from Homologaciones.models import Homologacion, pais, fabricante, tipo, referencia, estado, resultado, atributo_elemento_h
 from Homologaciones.forms import paisForm
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from Dispositivos.models import dispositivo as dispositivo_id
 from Dispositivos.models import dispositivo_atributo
+from django.views.generic.edit import FormMixin
+from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms
 # Create your views here.
 
 @login_required()
@@ -24,6 +26,43 @@ def home(request):
 def homologaciones(request):
 
     return render(request, 'Homologaciones/homologaciones.html')
+
+
+class CreateHomologacion(FormMixin, DetailView):
+    template_name = 'Homologaciones/crear.html'
+    form_class = HomologacionForm
+    form_class2= atributo_elemento_hForm
+    model = Homologacion
+
+
+    queryset = referencia.objects.all()
+    slug_field = 'pk'
+    slug_url_kwarg = 'pk'
+    queryset = referencia.objects.all()
+    context_object_name = 'pk'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['estados'] = queryset=estado.objects.all()
+        context['resultados'] = queryset=resultado.objects.all()
+
+        return context
+
+    def homologacion(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        form.save()
+        return super(CreateHomologacion, self).form_valid(form)
+
+
+    def get_success_url(self):
+        return reverse('Homologacion:home')
 
 class HomologacionDetailView(LoginRequiredMixin, DetailView):
 
@@ -44,6 +83,25 @@ class HomologacionDetailView(LoginRequiredMixin, DetailView):
         context['atributos'] = queryset=dispositivo_atributo.objects.filter(id_dispositivo=self.obj.id_dispositivo)
         return context
 
+class HomologacionListView(DetailView):
+    model = Homologacion
+    template_name = 'Homologaciones/terminar.html'
+
+    queryset = referencia.objects.all()
+    slug_field = 'pk'
+    slug_url_kwarg = 'pk'
+    queryset = referencia.objects.all()
+    context_object_name = 'pk'
+
+    def get_object(self, queryset=None):
+        self.obj = super().get_object()
+        return self.obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Lista homologaciones'
+        context['object_list']=Homologacion.objects.all()
+        return context
 
 class CategoryListView(ListView):
     model = referencia
@@ -56,10 +114,11 @@ class CategoryListView(ListView):
 
 class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 
-    model = referencia
-    fields = [ 'profile','id_dispositivo', 'refer', 'pais', 'name',  'fabricante']
+    # model = referencia
+    # fields = [ 'profile','id_dispositivo', 'refer', 'pais', 'name',  'fabricante']
+    form_class= ReferenciaForms
+#    form_class2= atributo_elemento_hForm
     template_name = 'Homologaciones/new4.html'
-    print("holaaaaaaa")
 
 
     def form_valid(self, form):
@@ -69,10 +128,15 @@ class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         form.save()
         self.new_refer=form.save()
         messages.success(self.request, 'Form submission successful')
+        Homologacion.objects.create(
+                refer=referencia.objects.get(pk=self.new_refer.pk),
+                profile=self.new_refer.profile,
+                tipo=tipo.objects.get(tipo="Oficial")
+        )
         return super(Createreferencia, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('Homologaciones:detail', kwargs={ "pk": self.new_refer.pk})
+        return reverse('Homologaciones:homologacion', kwargs={ "pk": self.new_refer.pk})
         #return render(request, 'Homologaciones/detail', 1)
 
     def get_context_data(self, **kwargs):

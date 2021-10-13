@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+<title>Crear homologacion</title>
+
+{% endblock %}
+
+{% block container %}
+
+    <div class="container mt-0 mb-5">
+        <div class="row justify-content-md-center">
+            <div class="col-6 pt-3 pb-3" id="profile-box">
+                <h4 class="mb-4 text-center">Nueva homologacion!</h4>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+
+
+
+                    <div class="form-group d-block">
+                              <label >estado:</label>
+                              <select class="selectpicker " aria-label=".form-select-lg example" name="estado">
+                                {% for choice in estados%}
+                                <option value= "{{ choice }}"> {{ choice }}</option>
+                                {% endfor %}
+                                </select>
+                          <div class="invalid-feedback">
+                           {% for error in form.fabricante.errors %}{{ error }}{% endfor %}
+                          </div>
+                    </div>
+
+                    <div class="form-group">
+                              <label >Resultado:</label>
+                              <select class="selectpicker" aria-label=".form-select-lg example" name="id_dispositivo">
+                                {% for choice in resultados%}
+                                <option value= "{{ choice }}"> {{ choice }}</option>
+                                {% endfor %}
+                                </select>
+                          <div class="invalid-feedback">
+                           {% for error in form.id_dispositivo.errors %}{{ error }}{% endfor %}
+                          </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mt-5">Publish!</button>
+                </form>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}
