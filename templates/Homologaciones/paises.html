@@ -17,7 +17,15 @@
                     <div class="form-group">
                       {{ formset.management_form }}
                       {% for f in formset %}
-                        <br> {{ f}}<br />
+                        {% for i in f %}
+                        <br> {% if  i.label == 'Profile'%}
+                          <h1>{{i.label}}</h1>
+                              <input type="hidden" name="profile" value="1" />
+                          {%else%}
+                            {{ i}}
+                        {%endif%}
+                        <br/>
+                          {% endfor %}
                         {% endfor %}
                     </div>
                     <button type="submit" class="btn btn-primary btn-block mt-5">Publish!</button>

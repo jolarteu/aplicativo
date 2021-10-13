@@ -182,13 +182,13 @@ class Createpais(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
 
     def get_context_data(self, **kwargs):
-        self.paisFormSet = modelformset_factory(pais, fields=('pais',),extra=pais.objects.all().count())
+        self.paisFormSet = modelformset_factory(atributo_elemento_h, fields='__all__',extra=2)
         context = super(Createpais, self).get_context_data(**kwargs)
         context['formset'] = self.paisFormSet(queryset=pais.objects.none())
         return context
 
     def post(self, request, *args, **kwargs):
-        self.paisFormSet = modelformset_factory(pais, fields=('pais',),extra=pais.objects.all().count())
+        self.paisFormSet = modelformset_factory(atributo_elemento_h, fields='__all__',extra=2)
 
         formset = self.paisFormSet(request.POST)
         if formset.is_valid():
