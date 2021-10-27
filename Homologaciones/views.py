@@ -20,6 +20,9 @@ from django.views.generic.edit import FormMixin
 from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm
 # Create your views here.
 from django.http import HttpResponseRedirect
+from Users.models import Profile
+from django.contrib.auth.models import User
+
 
 @login_required()
 def home(request):
@@ -29,6 +32,72 @@ def home(request):
 def homologaciones(request):
 
     return render(request, 'Homologaciones/homologaciones.html')
+
+
+class  Homologacion_terminar(DetailView, CreateView):
+    model=Homologacion
+    template_name= 'Homologaciones/terminar.html'
+    form_class=atributo_elemento_hForm
+
+    queryset = Homologacion.objects.all()
+
+    # def get_queryset(self):
+    #         #self.user = User.objects.filter(profile=self.request.user)
+    #         self.user= self.request.user
+    #         return self.user
+
+    def get_object(self, queryset=None):
+        self.obj = super().get_object()
+        return self.obj
+
+    def obtener_dispositivo(self, *args, **kwargs):
+        self.obj=self.get_object()
+        self.refer=referencia.objects.get(pk=self.obj.refer.pk)
+        self.dispositivo=dispositivo_id.objects.get(pk=self.refer.id_dispositivo.pk)
+        return self.dispositivo
+
+    def form_set(self, *args, **kwargs):
+        choice=[1, 2]
+        self.paisFormSet = modelformset_factory(atributo_elemento_h, fields=('atributo','valor','document'),
+        extra=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count())
+
+        # for form in self.paisFormSet(queryset=pais.objects.none()):
+        #     form.fields['atributo'].choices=choice
+
+        # #     #i.fields['atributo'].choices=choice
+        for i in range (dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count()):
+            (self.paisFormSet(queryset=pais.objects.none()))[i].fields['atributo'].choices=[]
+
+        return self.paisFormSet
+
+    def get_context_data(self, **kwargs):
+        self.obtener_dispositivo()
+        self.paisFormSet = self.form_set()
+        context = super(Homologacion_terminar, self).get_context_data(**kwargs)
+        context['formset'] = self.paisFormSet(queryset=pais.objects.none())
+        context['title'] = 'terminar homologacion'
+        #context['pk']=Homologacion.objects.get(pk=self.obj.pk)
+        return context
+
+    def post(self, request, *args, **kwargs):
+        self.paisFormSet = self.form_set()
+        formset = self.paisFormSet(request.POST)
+        if formset.is_valid():
+            return self.form_valid(formset)
+
+    def form_valid(self, formset):
+        self.obj = super().get_object()
+        instances = formset.save(commit=False)
+        for instance in instances:
+            instance.Homologacion=Homologacion.objects.get(pk=self.obj.pk)
+            instance.profile=Profile.objects.get(pk=2)          ##colocar para detectar usuario IMPORTANTE
+            instance.save()
+        #return super(Createpais, self).form_valid(form)
+        #return HttpResponseRedirect('Homologaciones:home')
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+         return reverse('Homologaciones:home')
 
 
 class CreateHomologacion(FormMixin, DetailView):
@@ -86,9 +155,9 @@ class HomologacionDetailView(LoginRequiredMixin, DetailView):
         context['atributos'] = queryset=dispositivo_atributo.objects.filter(id_dispositivo=self.obj.id_dispositivo)
         return context
 
-class HomologacionListView(DetailView):
+class HomologacionListView(LoginRequiredMixin, DetailView):
     model = Homologacion
-    template_name = 'Homologaciones/terminar.html'
+    template_name = 'Homologaciones/lista_homologaciones.html'
 
     queryset = referencia.objects.all()
 
@@ -102,7 +171,7 @@ class HomologacionListView(DetailView):
         context['object_list']=Homologacion.objects.filter(refer=self.obj.pk)
         return context
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = referencia
     template_name = 'Homologaciones/list2.html'
 
@@ -135,7 +204,7 @@ class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         return super(Createreferencia, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('Homologaciones:homologacion', kwargs={ "pk": self.new_refer.pk})
+        return reverse('Homologaciones:detail', kwargs={ "pk": self.new_refer.pk})
         #return render(request, 'Homologaciones/detail', 1)
 
     def get_context_data(self, **kwargs):
@@ -143,35 +212,6 @@ class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         context['fabricantes'] = queryset=fabricante.objects.all()
         context['dispositivos'] = queryset=dispositivo_id.objects.all()
         return context
-
-# class CreateHomologacion(LoginRequiredMixin,SuccessMessageMixin, CreateView):
-#
-#     model = Homologacion
-#     fields = [ 'profile','id_dispositivo', 'refer', 'pais', 'name',  'document', 'tipo', 'fabricante']
-#     template_name = 'Homologaciones/new.html'
-#     print("holaaaaaaa")
-#
-#
-#     def form_valid(self, form):
-#         print("holiiiiiiiii")
-#         form.instance.user = self.request.user
-#         form.instance.profile = self.request.user.profile
-#         print(form)
-#         form.save()
-#         messages.success(self.request, 'Form submission successful')
-#         return super(CreateHomologacion, self).form_valid(form)
-#
-#     def get_success_url(self):
-#
-#         return reverse('Homologaciones:home')
-#
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         context['tipos'] = queryset=tipo.objects.all()
-#         context['fabricantes'] = queryset=fabricante.objects.all()
-#         context['dispositivos'] = queryset=dispositivo_id.objects.all()
-#         return context
 
 class Createpais(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
@@ -189,7 +229,6 @@ class Createpais(LoginRequiredMixin, SuccessMessageMixin, CreateView):
 
     def post(self, request, *args, **kwargs):
         self.paisFormSet = modelformset_factory(atributo_elemento_h, fields='__all__',extra=2)
-
         formset = self.paisFormSet(request.POST)
         if formset.is_valid():
             return self.form_valid(formset)

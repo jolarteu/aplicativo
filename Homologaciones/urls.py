@@ -28,13 +28,18 @@ urlpatterns = [
     ),
     path(
         route = 'new',
-        view = views.Createpais.as_view(),
+        view = views.Createreferencia.as_view(),
         name='new'
     ),
     path(
         route = 'consultar/<slug:pk>',
         view = views.HomologacionListView.as_view(),
         name='detail'
+    ),
+    path(
+        route = 'terminar/<slug:pk>',
+        view = views.Homologacion_terminar.as_view(),
+        name='terminar'
     ),
     # path(
     #     route = 'consultar/<slug:pk>',

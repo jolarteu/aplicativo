@@ -37,12 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_extensions',    
+    'django_extensions',
+    'geeks',
     #local APPS
     'Homologaciones',
     'Users',
     'Dispositivos',
     'Atributos',
+    'Fabricantes',
 
 ]
 
@@ -101,7 +103,7 @@ DATABASES = {
        'USER': 'postgres',
        'PASSWORD': 'password',
        'HOST': 'localhost',
-       'PORT': '',
+       'PORT': '5432',
     }
 }
 

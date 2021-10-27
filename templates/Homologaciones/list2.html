@@ -16,7 +16,6 @@
                 <thead>
                   <tr>
                       <th scope="col" style="width: 10%;">referencia</th>
-                      <th scope="col" style="width: 10%;">referencia</th>
                       <th scope="col" style="width: 15%;">nombre</th>
                       <th scope="col" style="width: 10%;">creador</th>
                       <th scope="col" style="width: 10%;">pais</th>
@@ -30,7 +29,7 @@
                   {% for c in object_list %}
 
                       <tr>
-                          <td>  <a href="{% url "Homologaciones:detail" c.pk %}">  {{ c.pk }} </a> </td>
+
                           <td>  {{ c.refer }}</td>
                           <td>{{ c.name }}</td>
                           <td>{{ c.profile }}</td>
@@ -41,7 +40,9 @@
                                   <i class="fas fa-edit"></i>
                               </button>
                               <button type="button" class="btn btn-default btn-xs btn-flat">
+                                <a href="{% url "Homologaciones:detail" c.pk %}">
                                   <i class="fas fa-eye"></i>
+                                  </a>
                               </button>
                           </td>
                       </tr>

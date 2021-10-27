@@ -10,13 +10,13 @@ urlpatterns = [
 
 
     path(
-        route = 'nuevo_dispositivo',
+        route = '/nuevo_dispositivo',
         view = views.CreateDispositivo.as_view(),
         name='nuevo_dispositivo'
     ),
 
     path(
-        route = 'dispositivo',
+        route = '',
         view = views.dispositivo_v,
         name='dispositivo'
     ),

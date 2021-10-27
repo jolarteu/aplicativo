@@ -1,0 +1,76 @@
+
+
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+    <title> consultar </title>
+
+{% endblock %}
+
+{% block container %}
+
+<div class="container-fluid">
+    <div class="card card-default mr-5 ml-5 mt-4" >
+
+        <div class="card-body">
+            <table class="table" id="table_prueba">
+                <thead>
+                  <tr>
+                      <th scope="col" style="width: 10%;">referencia</th>
+                      <th scope="col" style="width: 15%;">creador</th>
+                      <th scope="col" style="width: 10%;">creacion</th>
+                      <th scope="col" style="width: 10%;">estado</th>
+                      <th scope="col" style="width: 10%;">opciones</th>
+
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for c in object_list %}
+
+                      <tr>
+                          <td> {{ c.refer }} </td>
+                          <td>{{ c.profile }}</td>
+                          <td>{{ c.created }}</td>
+                          <td>{{ c.estado}}</td>
+
+                          <td>
+                              <button type="button" class="btn btn-warning btn-xs btn-flat">
+                                <a href="{% url "Homologaciones:terminar" c.pk %}">
+                                  <i class="fas fa-edit"></i>
+                                </a>
+                              </button>
+                              <button type="button" class="btn btn-default btn-xs btn-flat">
+                                  <i class="fas fa-eye"></i>
+                              </button>
+                          </td>
+                      </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+  {% endblock %}
+
+
+      {% block java %}
+
+      <script>
+
+         $(document).ready( function () {
+            $('#table_prueba').DataTable(
+            {
+              {% include "spanish.html" %}
+              ,"scrollY":    "400px",
+              "scrollCollapse": true,
+
+
+           }
+
+            );
+        } );
+
+      </script>
+
+      {% endblock %}

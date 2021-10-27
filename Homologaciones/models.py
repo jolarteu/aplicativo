@@ -1,16 +1,11 @@
 from django.db import models
-from  django.contrib.auth.models import User
-from  Dispositivos.models import dispositivo, dispositivo_atributo
+from django.contrib.auth.models import User
+from Dispositivos.models import dispositivo, dispositivo_atributo
 from Users.models import Profile
 from django.db.models.signals import post_save
+from Fabricantes.models import fabricante, pais
 
-class pais(models.Model):
-    pais = models.CharField(max_length=50, blank=False, primary_key=True)
-    created= models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.pais
 
 class estado(models.Model):
     estado=models.CharField(max_length=50, blank=False, primary_key=True)
@@ -39,13 +34,7 @@ class tipo(models.Model):
     def __str__(self):
         return self.tipo
 
-class fabricante(models.Model):
-    fabricante = models.CharField(max_length=50, blank=False, primary_key=True)
-    created= models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.fabricante
 
 class referencia(models.Model):
     id_referencia = models.BigAutoField(primary_key=True)

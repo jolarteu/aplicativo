@@ -35,10 +35,6 @@ class  HomologacionAdmin(admin.ModelAdmin):
     # search_fields=('title')
 
 #    list_filter = ('created', 'modified')
-@admin.register(pais)
-class  paisAdmin(admin.ModelAdmin):
-
-    list_display =('pais', 'created')
 
 @admin.register(estado)
 class  estadoAdmin(admin.ModelAdmin):
@@ -54,8 +50,3 @@ class  resultadoAdmin(admin.ModelAdmin):
 class  tipoAdmin(admin.ModelAdmin):
 
     list_display =('tipo', 'created')
-
-@admin.register(fabricante)
-class  fabricanteAdmin(admin.ModelAdmin):
-
-    list_display =('fabricante', 'created')

@@ -1,0 +1,3 @@
+[console_scripts]
+geek=geek.console:run
+

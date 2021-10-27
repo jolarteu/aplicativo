@@ -38,3 +38,12 @@
     </div>
 
 {% endblock %}
+
+
+{% if  i.label == 'Profile'%}
+     <input type="hidden" name="form-{j}-profile" value=value="{{user.profile.id}}" />
+     {% elif  i.label == 'Homologacion'%}
+     <input type="hidden" name="form-0-Homologacion" value="7" />
+ {%else%}
+   {{ i}}
+{%endif%}
