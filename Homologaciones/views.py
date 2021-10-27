@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required #pide iniciar seccion
 from django.views.decorators.cache import cache_control, never_cache
 from django.contrib.auth.mixins import  LoginRequiredMixin
 from django.forms import modelformset_factory
-
+from django import forms
 # from post.models import Post
 # from post.forms import PostForm
 from django.views.generic import ListView, DetailView, CreateView
@@ -57,24 +57,40 @@ class  Homologacion_terminar(DetailView, CreateView):
         return self.dispositivo
 
     def form_set(self, *args, **kwargs):
-        choice=[1, 2]
         self.paisFormSet = modelformset_factory(atributo_elemento_h, fields=('atributo','valor','document'),
-        extra=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count())
+        extra=self.cantidad(), widgets={
+            'valor': forms.TextInput(attrs={'class': 'myfieldclass'}),
+            })
 
-        # for form in self.paisFormSet(queryset=pais.objects.none()):
-        #     form.fields['atributo'].choices=choice
-
-        # #     #i.fields['atributo'].choices=choice
-        for i in range (dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count()):
-            (self.paisFormSet(queryset=pais.objects.none()))[i].fields['atributo'].choices=[]
 
         return self.paisFormSet
+
+    def cantidad(self, **kwargs):
+        extra=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count()
+        return extra
+
+    def lista(self, **kwargs):
+        lista=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo())
+        lista=[(lista[i].pk, lista[i]) for i in range(len(lista))]
+        return lista
+
+    def contexto(self, **kwargs):
+        pass
+        return self.formset
 
     def get_context_data(self, **kwargs):
         self.obtener_dispositivo()
         self.paisFormSet = self.form_set()
+        formset=self.paisFormSet(queryset=dispositivo_atributo.objects.none())
+        for i in range(self.cantidad()):
+            formset[i].fields['atributo'].choices = self.lista()
+            formset[i].fields['atributo'].initial  = (self.lista()[i])[0]
+
+        #formset[0].fields['atributo'].choices = [(1,4),(2,2),(3,3)]
+    #    formset[0].fields['atributo'].choices = self.lista()
         context = super(Homologacion_terminar, self).get_context_data(**kwargs)
-        context['formset'] = self.paisFormSet(queryset=pais.objects.none())
+    #    context['formset'] = self.paisFormSet(queryset=dispositivo_atributo.objects.none())
+        context['formset'] = formset
         context['title'] = 'terminar homologacion'
         #context['pk']=Homologacion.objects.get(pk=self.obj.pk)
         return context
