@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+<title>Crear homologacion</title>
+
+{% endblock %}
+
+{% block container %}
+
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-6 pt-3 pb-3" id="profile-box">
+<form method="post">{% csrf_token %}
+    {{ form.as_p }}
+      <button type="submit" class="btn btn-primary btn-block mt-5">Publish!</button>
+</form>
+</div>
+</div>
+
+</div>
+
+{% endblock %}

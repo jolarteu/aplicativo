@@ -2,7 +2,7 @@
 
 {% block head_content %}
 
-    <title> consultar </title>
+    <title> Lista de fabricantes </title>
 
 {% endblock %}
 
@@ -15,12 +15,11 @@
             <table class="table" id="table_prueba">
                 <thead>
                   <tr>
-                      <th scope="col" style="width: 10%;">Referencia</th>
-                      <th scope="col" style="width: 15%;">Nombre</th>
-                      <th scope="col" style="width: 10%;">Creador</th>
-                      <th scope="col" style="width: 10%;">Pais</th>
-                      <th scope="col" style="width: 15%;">Creacion</th>
-                      <th scope="col" style="width: 10%;">Homologaciones</th>
+                      <th scope="col" style="width: 20%;">Nombre</th>
+                      <th scope="col" style="width: 20%;">Creadro</th>
+                      <th scope="col" style="width: 20%;">Creacion</th>
+                      <th scope="col" style="width: 20%;">Descripcion</th>
+                      <th scope="col" style="width: 20%;">Caracteristicas</th>
 
 
                   </tr>
@@ -30,15 +29,19 @@
 
                       <tr>
 
-                          <td>  {{ c.refer }}</td>
-                          <td>{{ c.name }}</td>
-                          <td>{{ c.profile }}</td>
-                          <td>{{ c.pais }}</td>
-                          <td>{{ c.created }}</td>
+                          <td>  {{ c.name }}</td>
+                          <td>  {{ c.profile }}</td>
+                          <td>  {{ c.created }}</td>
+                          <td>{{ c.descripcion }}</td>
                           <td>
                               <button type="button" class="btn btn-default btn-xs btn-flat">
-                                <a href="{% url "Homologaciones:detail" c.pk %}">
+                                <a href="{% url "Dispositivos:detail" c.pk %}">
                                   <i class="fas fa-eye"></i>
+                                  </a>
+                              </button>
+                              <button type="button" class="btn btn-default btn-xs btn-flat">
+                                    <a href="{% url "Dispositivos:terminar" c.pk %}">
+                                  <i class="far fa-plus-square"></i>
                                   </a>
                               </button>
                           </td>

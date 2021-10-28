@@ -2,7 +2,7 @@
 
 {% block head_content %}
 
-    <title> consultar </title>
+    <title> Lista de fabricantes </title>
 
 {% endblock %}
 
@@ -15,12 +15,9 @@
             <table class="table" id="table_prueba">
                 <thead>
                   <tr>
-                      <th scope="col" style="width: 10%;">Referencia</th>
-                      <th scope="col" style="width: 15%;">Nombre</th>
-                      <th scope="col" style="width: 10%;">Creador</th>
-                      <th scope="col" style="width: 10%;">Pais</th>
-                      <th scope="col" style="width: 15%;">Creacion</th>
-                      <th scope="col" style="width: 10%;">Homologaciones</th>
+                      <th scope="col" style="width: 45%;">Fabricante</th>
+                      <th scope="col" style="width: 45%;">creacion</th>
+                      <th scope="col" style="width: 10%;">opciones</th>
 
 
                   </tr>
@@ -30,16 +27,16 @@
 
                       <tr>
 
-                          <td>  {{ c.refer }}</td>
-                          <td>{{ c.name }}</td>
-                          <td>{{ c.profile }}</td>
-                          <td>{{ c.pais }}</td>
+                          <td>  {{ c.fabricante }}</td>
                           <td>{{ c.created }}</td>
                           <td>
+                              <button type="button" class="btn btn-warning btn-xs btn-flat">
+                                  <i class="fas fa-edit"></i>
+                              </button>
                               <button type="button" class="btn btn-default btn-xs btn-flat">
-                                <a href="{% url "Homologaciones:detail" c.pk %}">
+
                                   <i class="fas fa-eye"></i>
-                                  </a>
+
                               </button>
                           </td>
                       </tr>

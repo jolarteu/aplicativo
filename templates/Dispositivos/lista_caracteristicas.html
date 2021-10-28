@@ -1,0 +1,60 @@
+
+
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+    <title> consultar </title>
+
+{% endblock %}
+
+{% block container %}
+
+<div class="container-fluid">
+    <div class="card card-default mr-5 ml-5 mt-4" >
+
+        <div class="card-body">
+            <table class="table" id="table_prueba">
+                <thead>
+                  <tr>
+                      <th scope="col" style="width: 50%;">Dispositivo</th>
+                      <th scope="col" style="width: 50%;">caracteristica</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for c in object_list %}
+
+                      <tr>
+                          <td> {{ c.id_dispositivo }} </td>
+                          <td>{{ c.id_atributo }}</td>
+
+                      </tr>
+                  {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+  </div>
+  {% endblock %}
+
+
+      {% block java %}
+
+      <script>
+
+         $(document).ready( function () {
+            $('#table_prueba').DataTable(
+            {
+              {% include "spanish.html" %}
+              ,"scrollY":    "400px",
+              "scrollCollapse": true,
+
+
+           }
+
+            );
+        } );
+
+      </script>
+
+      {% endblock %}

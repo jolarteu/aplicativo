@@ -3,10 +3,11 @@ from  django.contrib.auth.models import User
 from Atributos.models import atributo
 from Users.models import Profile
 
+
 class dispositivo(models.Model):
-    id = models.BigAutoField(primary_key=True)
+
     profile=models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
-    name =models.CharField(max_length=50, blank=False)
+    name =models.CharField(max_length=50, blank=False, unique=True)
     descripcion = models.CharField(max_length=200, blank=False)
     created= models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
