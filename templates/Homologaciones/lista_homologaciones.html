@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block container %}
-
+{{comparar}}
 <div class="container-fluid">
     <div class="card card-default mr-5 ml-5 mt-4" >
 
@@ -35,15 +35,17 @@
                           <td>{{ c.estado}}</td>
 
                           <td>
-                              <button type="button" class="btn btn-warning btn-xs btn-flat">
-                                {% if c.estado == "1"%}
+
+                                {% ifequal c.estado comparar%}
+                                <button type="button" class="btn btn-warning btn-xs btn-flat">
                                 <a href="{% url "Homologaciones:terminar" c.pk %}">
                                   <i class="fas fa-edit"></i>
                                 </a>
+                                </button>
                               {% else %}
-                                <i class="fas fa-eye"></i>
-                              {% endif %}
-                            </button>
+                                
+                              {% endifequal  %}
+
                               <button type="button" class="btn btn-default btn-xs btn-flat">
                                   <i class="fas fa-eye"></i>
                               </button>

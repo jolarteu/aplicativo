@@ -212,6 +212,7 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['comparar']=estado.objects.get(pk='En curso')
         context['title'] = 'Lista homologaciones'
         context['object_list']=Homologacion.objects.filter(refer=self.obj.pk)
         return context
