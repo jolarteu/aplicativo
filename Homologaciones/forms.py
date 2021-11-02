@@ -22,6 +22,14 @@ class  HomologacionForm(forms.ModelForm):
         #fields= ['profile','id_dispositivo', 'refer', 'pais', 'name',  'document',  'estado', 'tipo', 'fabricante']
         fields= ['profile', 'refer',  'tipo', 'resultado']
 
+class  HomologacionUpdateForm(forms.ModelForm):
+
+    class Meta:
+
+        model = Homologacion
+        #fields= ['profile','id_dispositivo', 'refer', 'pais', 'name',  'document',  'estado', 'tipo', 'fabricante']
+        fields= ['tipo', 'resultado']
+
 class  atributo_elemento_hForm(forms.ModelForm):
 
     class Meta:

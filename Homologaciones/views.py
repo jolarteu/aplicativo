@@ -4,11 +4,11 @@ from  datetime import datetime
 from django.contrib.auth.decorators import login_required #pide iniciar seccion
 from django.views.decorators.cache import cache_control, never_cache
 from django.contrib.auth.mixins import  LoginRequiredMixin
-from django.forms import modelformset_factory
+from django.forms import modelformset_factory, inlineformset_factory
 from django import forms
 # from post.models import Post
 # from post.forms import PostForm
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse
 from Homologaciones.models import Homologacion, pais, fabricante, tipo, referencia, estado, resultado, atributo_elemento_h
 from Homologaciones.forms import paisForm
@@ -17,7 +17,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from Dispositivos.models import dispositivo as dispositivo_id
 from Dispositivos.models import dispositivo_atributo
 from django.views.generic.edit import FormMixin
-from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm
+from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm, HomologacionUpdateForm
 # Create your views here.
 from django.http import HttpResponseRedirect
 from Users.models import Profile
@@ -34,10 +34,10 @@ def homologaciones(request):
     return render(request, 'Homologaciones/homologaciones.html')
 
 
-class  Homologacion_terminar(DetailView, CreateView):
+class  Homologacion_terminar(DetailView ,UpdateView):
     model=Homologacion
     template_name= 'Homologaciones/terminar.html'
-    form_class=atributo_elemento_hForm
+    form_class=HomologacionUpdateForm
 
     queryset = Homologacion.objects.all()
 
@@ -65,6 +65,12 @@ class  Homologacion_terminar(DetailView, CreateView):
 
         return self.paisFormSet
 
+
+    def form_set_2(self, *args, **kwargs):
+        self.paisFormSet = modelformset_factory(Homologacion, fields=('__all__'),
+        )
+        return self.paisFormSet
+
     def cantidad(self, **kwargs):
         extra=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count()
         return extra
@@ -80,7 +86,9 @@ class  Homologacion_terminar(DetailView, CreateView):
 
     def get_context_data(self, **kwargs):
         self.obtener_dispositivo()
+        self.HomologacionFormSet = self.form_set_2()
         self.paisFormSet = self.form_set()
+        formset2=self.HomologacionFormSet(queryset=Homologacion.objects.none())
         formset=self.paisFormSet(queryset=dispositivo_atributo.objects.none())
         for i in range(self.cantidad()):
             formset[i].fields['atributo'].choices = self.lista()
@@ -90,32 +98,45 @@ class  Homologacion_terminar(DetailView, CreateView):
     #    formset[0].fields['atributo'].choices = self.lista()
         context = super(Homologacion_terminar, self).get_context_data(**kwargs)
     #    context['formset'] = self.paisFormSet(queryset=dispositivo_atributo.objects.none())
+        #context['formset2'] = formset2
         context['formset'] = formset
         context['title'] = 'terminar homologacion'
         #context['pk']=Homologacion.objects.get(pk=self.obj.pk)
         return context
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request , *args, **kwargs):
+        self.obj = super().get_object()
+        self.HomologacionFormSet = self.form_set_2()
         self.paisFormSet = self.form_set()
+        formset2 = self.HomologacionFormSet(request.POST)
+    #    form1=self.form(request.POST)
         formset = self.paisFormSet(request.POST)
+        form=HomologacionUpdateForm(request.POST, instance=self.obj)
+    #    form = self.get_form()
         user = Profile.objects.get(pk=request.user.profile.pk)
-        if formset.is_valid():
-            return self.form_valid(formset, user)
+        if formset.is_valid() and form.is_valid():
+            return self.form_valid(formset,form, user)
 
-    def profile(self,request):
-        skills = Profile.objects.filter(pk=request.user.pk)
 
-        return skills
+    def form_valid(self, formset, form, user):
 
-    def form_valid(self, formset, user):
         self.obj = super().get_object()
         instances = formset.save(commit=False)
-        user2 = user
+        f=form.save(commit=False)
+        if (f.resultado==resultado.objects.get(pk='Sin terminar')):
+            f.estado=estado.objects.get(pk='En curso')
+        else:
+            f.estado=estado.objects.get(pk='Cerrada')
+        f.save()
+        # f.profile=user
+        # f.refer=referencia.objects.get(pk=sel.obj.refer)
+        #instance2= form.save(commit=False)
         for instance in instances:
             instance.Homologacion=Homologacion.objects.get(pk=self.obj.pk)
-            #instance.profile=Profile.objects.get(pk=2)          ##colocar para detectar usuario IMPORTANTE
-            instance.profile=user           #SE PUDO :)  
+            #instance.profile=Profile.objects.get(pk=2)          #colocar para detectar usuario IMPORTANTE
+            instance.profile=user           #SE PUDO :)
             instance.save()
+
         #return super(Createpais, self).form_valid(form)
         #return HttpResponseRedirect('Homologaciones:home')
         return redirect(self.get_success_url())
