@@ -30,13 +30,10 @@
                           <td>  {{ c.fabricante }}</td>
                           <td>{{ c.created }}</td>
                           <td>
-                              <button type="button" class="btn btn-warning btn-xs btn-flat">
-                                  <i class="fas fa-edit"></i>
-                              </button>
                               <button type="button" class="btn btn-default btn-xs btn-flat">
-
+                                <a href="{% url "Fabricantes:lista_fabricantes_pais" c.fabricante %}">
                                   <i class="fas fa-eye"></i>
-
+                                  </a>
                               </button>
                           </td>
                       </tr>

@@ -17,11 +17,11 @@
             <table class="table" id="table_prueba">
                 <thead>
                   <tr>
-                      <th scope="col" style="width: 15%;">referencia</th>
-                      <th scope="col" style="width: 15%;">creador</th>
-                      <th scope="col" style="width: 15%;">creacion</th>
-                      <th scope="col" style="width: 15%;">estado</th>
-                      <th scope="col" style="width: 15%;">tipo</th>
+                      <th scope="col" style="width: 15%;">fabricante</th>
+                      <th scope="col" style="width: 15%;">pais</th>
+                      <th scope="col" style="width: 15%;">representante</th>
+                      <th scope="col" style="width: 15%;">numero</th>
+                      <th scope="col" style="width: 15%;">email</th>
                       <th scope="col" style="width: 15%;">opciones</th>
 
                   </tr>
@@ -30,28 +30,19 @@
                   {% for c in object_list %}
 
                       <tr>
-                          <td> {{ c.refer }} </td>
-                          <td>{{ c.profile }}</td>
-                          <td>{{ c.created }}</td>
-                          <td>{{ c.estado}}</td>
-                          <td>{{ c.tipo}}</td>
+                          <td> {{ c.fabricante }} </td>
+                          <td>{{ c.pais }}</td>
+                          <td>{{ c.representante }}</td>
+                          <td>{{ c.numero}}</td>
+                          <td>{{ c.email}}</td>
 
 
                           <td>
 
-                                {% ifequal c.estado comparar%}
+                            <a href="{% url "Fabricantes:Update_fabricante" c.pk %}">
                                 <button type="button" class="btn btn-warning btn-xs btn-flat">
-                                <a href="{% url "Homologaciones:terminar" c.pk %}">
                                   <i class="fas fa-edit"></i>
-                                </a>
                                 </button>
-                              {% else %}
-
-                              {% endifequal  %}
-
-                              <button type="button" class="btn btn-default btn-xs btn-flat">
-                                  <i class="fas fa-eye"></i>
-                              </button>
                           </td>
                       </tr>
                   {% endfor %}
