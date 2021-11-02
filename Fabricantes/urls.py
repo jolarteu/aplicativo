@@ -8,7 +8,7 @@ from Fabricantes import views
 
 urlpatterns = [
         path(
-            route = '/nuevo_fabricante',
+            route = 'nuevo_fabricante',
             view = views.CreateFabricante.as_view(),
             name='nuevo_fabricante'
         ),
@@ -18,7 +18,7 @@ urlpatterns = [
             name='fabricantes'
         ),
         path(
-            route = '/lista_fabricantes',
+            route = 'lista_fabricantes',
             view = views.CategoryListView.as_view(),
             name='lista_fabricantes'
         ),

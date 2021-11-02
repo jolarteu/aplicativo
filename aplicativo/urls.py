@@ -27,9 +27,9 @@ urlpatterns = [
     path('', include(('Homologaciones.urls', 'Homologaciones'), namespace='Homologaciones')),
     url(r'^favicon\.ico$',RedirectView.as_view(url='/static/images/favicon.ico')),
     path('Users/', include(('Users.urls', 'Users'), namespace='Users')),
-    path('Dispositivos', include(('Dispositivos.urls', 'Dispositivos'), namespace='Dispositivos')),
-    path('Atributos', include(('Atributos.urls', 'Atributos'), namespace='Atributos')),
-    path('Fabricantes', include(('Fabricantes.urls', 'Fabricantes'), namespace='Fabricantes')),
+    path('Dispositivos/', include(('Dispositivos.urls', 'Dispositivos'), namespace='Dispositivos')),
+    path('Atributos/', include(('Atributos.urls', 'Atributos'), namespace='Atributos')),
+    path('Fabricantes/', include(('Fabricantes.urls', 'Fabricantes'), namespace='Fabricantes')),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

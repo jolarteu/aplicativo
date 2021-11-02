@@ -98,15 +98,23 @@ class  Homologacion_terminar(DetailView, CreateView):
     def post(self, request, *args, **kwargs):
         self.paisFormSet = self.form_set()
         formset = self.paisFormSet(request.POST)
+        user = Profile.objects.get(pk=request.user.profile.pk)
         if formset.is_valid():
-            return self.form_valid(formset)
+            return self.form_valid(formset, user)
 
-    def form_valid(self, formset):
+    def profile(self,request):
+        skills = Profile.objects.filter(pk=request.user.pk)
+
+        return skills
+
+    def form_valid(self, formset, user):
         self.obj = super().get_object()
         instances = formset.save(commit=False)
+        user2 = user
         for instance in instances:
             instance.Homologacion=Homologacion.objects.get(pk=self.obj.pk)
-            instance.profile=Profile.objects.get(pk=2)          ##colocar para detectar usuario IMPORTANTE
+            #instance.profile=Profile.objects.get(pk=2)          ##colocar para detectar usuario IMPORTANTE
+            instance.profile=user           #SE PUDO :)  
             instance.save()
         #return super(Createpais, self).form_valid(form)
         #return HttpResponseRedirect('Homologaciones:home')

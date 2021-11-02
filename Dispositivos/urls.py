@@ -10,7 +10,7 @@ urlpatterns = [
 
 
     path(
-        route = '/nuevo_dispositivo',
+        route = 'nuevo_dispositivo',
         view = views.CreateDispositivo.as_view(),
         name='nuevo_dispositivo'
     ),
@@ -21,7 +21,7 @@ urlpatterns = [
         name='dispositivo'
     ),
     path(
-        route = '/lista_dispositivos',
+        route = 'lista_dispositivos',
         view = views.CategoryListView.as_view(),
         name='lista_dispositivos'
     ),
@@ -31,7 +31,7 @@ urlpatterns = [
         name='detail'
     ),
     path(
-        route = '/agregar/<slug:pk>',
+        route = 'agregar/<slug:pk>',
         view = views.CreateDispositivo_atributo.as_view(),
         name='terminar'
     ),
