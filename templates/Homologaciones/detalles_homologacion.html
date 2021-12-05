@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block container %}
-{{object_list}}
 <div class="container-fluid">
     <div class="card card-default mr-5 ml-5 mt-4" >
 
@@ -17,9 +16,9 @@
             <table class="table" id="table_prueba">
                 <thead>
                   <tr>
-                      <th scope="col" style="width: 15%;">atributo</th>
-                      <th scope="col" style="width: 15%;">valor</th>
-                      <th scope="col" style="width: 15%;">documento</th>
+                      <th scope="col" style="width: 40%;">atributo</th>
+                      <th scope="col" style="width: 40%;">valor</th>
+                      <th scope="col" style="width: 20%;">documento</th>
 
 
 
@@ -31,7 +30,12 @@
                       <tr>
                           <td> {{ c.atributo }} </td>
                           <td>{{ c.valor }}</td>
-                          <td>{{ c.document }}</td>
+                          {% if c.document %}
+                              <td class="d-flex justify-content-center"> <a href="{{ c.document.url }}" download  class="btn btn-dark float-right ">Download</a></td>
+                          {%else%}
+                              <td> </td>
+                          {%endif%}
+
 
                       </tr>
                   {% endfor %}

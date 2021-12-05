@@ -142,8 +142,7 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-         return reverse('Homologaciones:consultar')
-
+         return reverse('Homologaciones:consultar')             #llenar datos para la homologacion
 
 class CreateHomologacion(FormMixin, DetailView):
     template_name = 'Homologaciones/crear.html'
@@ -232,10 +231,7 @@ class detalles_homologacionDetailview(LoginRequiredMixin, DetailView):
         context['title'] = Homologacion.objects.filter(pk=self.obj.pk)
         context['object_list']=atributo_elemento_h.objects.filter(Homologacion=self.obj.pk)
 
-        return context          #ver homologaciones de cadad terminal
-
-
-
+        return context          #ver homologaciones de cadad terminal           #lista de atributos
 
 class CategoryListView(LoginRequiredMixin, ListView):
     model = referencia
@@ -244,7 +240,34 @@ class CategoryListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Lista homologaciones'
-        return context
+        return context          #lista de terminales
+
+
+    def get_success_url(self):
+         return reverse('Homologaciones:consultar')
+
+
+    def post(self, request):
+        self.pk=request.POST['key']
+        Homologacion.objects.create(
+            refer=referencia.objects.get(pk=self.pk),
+            profile=Profile.objects.get(pk=request.user.profile.pk),
+            tipo=tipo.objects.get(tipo="Oficial")
+
+        )
+
+        return redirect(self.get_success_url())
+
+    # def form_valid(self, form):
+    #     self.pk = self.request.pk
+    #     messages.success(self.request, 'Form submission successful')
+    #     Homologacion.objects.create(
+    #               refer=referencia.objects.get(pk=32),
+    #               profile=Profile.objects.get(pk=request.user.profile.pk),
+    #               tipo=tipo.objects.get(tipo="Oficial")
+    #     )
+    #     return redirect(self.get_success_url())
+
 
 class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 

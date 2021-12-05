@@ -9,7 +9,7 @@ from django.contrib.auth.models import  User
 class  referenciaAdmin(admin.ModelAdmin):
 
 
-    list_display =('refer', 'profile',  'name', 'created',
+    list_display =('pk', 'refer', 'profile',  'name', 'created',
                     'modified','fabricante')
 
 @admin.register(atributo_elemento_h)
@@ -24,7 +24,7 @@ class  referenciaAdmin(admin.ModelAdmin):
 class  HomologacionAdmin(admin.ModelAdmin):
 
 
-    list_display =('refer', 'profile', 'created',
+    list_display =('pk','refer', 'profile', 'created',
                     'modified', 'estado', 'tipo')
 
 #     # list_display_links = ('pk')
