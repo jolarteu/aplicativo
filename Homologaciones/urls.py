@@ -34,7 +34,7 @@ urlpatterns = [
     path(
         route = 'consultar/<slug:pk>',
         view = views.HomologacionListView.as_view(),
-        name='detail'
+        name='consultar_terminal'
     ),
     path(
         route = 'terminar/<slug:pk>',

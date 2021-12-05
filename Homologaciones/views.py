@@ -243,10 +243,9 @@ class CategoryListView(LoginRequiredMixin, ListView):
         return context          #lista de terminales
 
 
-    def get_success_url(self):
-         return reverse('Homologaciones:consultar')
-
-
+    def get_success_url(self, pk):
+        # return reverse('Homologaciones:consultar_terminal/'+pk)
+        return reverse('Homologaciones:consultar_terminal',kwargs={'pk': pk})           #asi se redirige bien :)
     def post(self, request):
         self.pk=request.POST['key']
         Homologacion.objects.create(
@@ -256,7 +255,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
 
         )
 
-        return redirect(self.get_success_url())
+        return redirect(self.get_success_url(self.pk))
 
     # def form_valid(self, form):
     #     self.pk = self.request.pk
