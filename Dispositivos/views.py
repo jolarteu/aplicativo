@@ -7,6 +7,7 @@ from Dispositivos.models import dispositivo, dispositivo_atributo
 from django.contrib import messages
 from django.urls import reverse
 from Dispositivos.forms import dispositivo_atributoForm
+from django.db.models import Q
 
 @login_required()
 def dispositivo_v(request):
@@ -69,8 +70,16 @@ class  CreateDispositivo_atributo(DetailView, CreateView):
     def get_object(self, queryset=None):
         self.obj = super().get_object()
         return self.obj
+      # def get_context_data(self, **kwargs):
+      #       """Insert the form into the context dict."""
+      #       if 'form' not in kwargs:
+      #           kwargs['form'] = self.get_form()
+      #       return super().get_context_data(**kwargs)
 
     def get_context_data(self, **kwargs):
+        # form=dispositivo_atributoForm(queryset=dispositivo_atributo.objects.none())
+        # form.fields['id_atributo'].choices=dispositivo_atributo.objects.filter(~Q(id_dispositivo=self.get_object()))
+        # kwargs['form'] = form
         context = super().get_context_data(**kwargs)
         context['title'] = 'Lista de dispositivos'
         context['dispositivo']=self.get_object()

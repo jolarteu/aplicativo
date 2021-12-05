@@ -41,7 +41,12 @@ urlpatterns = [
         view = views.Homologacion_terminar.as_view(),
         name='terminar'
     ),
-    # path(
+    path(
+        route = 'detalles_homologacion/<slug:pk>',
+        view = views.detalles_homologacionDetailview.as_view(),
+        name= 'detalles_homologacion'
+        ),
+    # path(,
     #     route = 'consultar/<slug:pk>',
     #     view = views.HomologacionDetailView.as_view(),
     #     name='detail'

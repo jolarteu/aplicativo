@@ -110,8 +110,8 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         self.paisFormSet = self.form_set()
         formset2 = self.HomologacionFormSet(request.POST)
     #    form1=self.form(request.POST)
-        formset = self.paisFormSet(request.POST)
-        form=HomologacionUpdateForm(request.POST, instance=self.obj)
+        formset = self.paisFormSet(request.POST, request.FILES)
+        form=HomologacionUpdateForm(request.POST, request.FILES, instance=self.obj)
     #    form = self.get_form()
         user = Profile.objects.get(pk=request.user.profile.pk)
         if formset.is_valid() and form.is_valid():
@@ -142,7 +142,7 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         return redirect(self.get_success_url())
 
     def get_success_url(self):
-         return reverse('Homologaciones:home')
+         return reverse('Homologaciones:consultar')
 
 
 class CreateHomologacion(FormMixin, DetailView):
@@ -215,7 +215,27 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
         context['comparar']=estado.objects.get(pk='En curso')
         context['title'] = 'Lista homologaciones'
         context['object_list']=Homologacion.objects.filter(refer=self.obj.pk)
-        return context
+        return context          #ver homologaciones de cadad terminal
+
+class detalles_homologacionDetailview(LoginRequiredMixin, DetailView):
+    model = atributo_elemento_h
+    template_name = 'Homologaciones/detalles_homologacion.html'
+
+    queryset= Homologacion.objects.all()
+
+    def get_object(self, queryset=None):
+        self.obj = super().get_object()
+        return self.obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = Homologacion.objects.filter(pk=self.obj.pk)
+        context['object_list']=atributo_elemento_h.objects.filter(Homologacion=self.obj.pk)
+
+        return context          #ver homologaciones de cadad terminal
+
+
+
 
 class CategoryListView(LoginRequiredMixin, ListView):
     model = referencia
