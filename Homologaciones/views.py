@@ -261,7 +261,7 @@ class CategoryListView(LoginRequiredMixin, ListView):
             )
             return redirect(self.get_success_url_1(self.pk))
 
-        elif self.function=="delate":
+        elif self.function=="delete":
             referencia.objects.filter(pk=self.pk).delete()
             return redirect(self.get_success_url_2())
 
