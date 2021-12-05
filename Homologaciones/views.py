@@ -243,19 +243,32 @@ class CategoryListView(LoginRequiredMixin, ListView):
         return context          #lista de terminales
 
 
-    def get_success_url(self, pk):
+    def get_success_url_1(self, pk):
         # return reverse('Homologaciones:consultar_terminal/'+pk)
         return reverse('Homologaciones:consultar_terminal',kwargs={'pk': pk})           #asi se redirige bien :)
+
+
     def post(self, request):
         self.pk=request.POST['key']
-        Homologacion.objects.create(
-            refer=referencia.objects.get(pk=self.pk),
-            profile=Profile.objects.get(pk=request.user.profile.pk),
-            tipo=tipo.objects.get(tipo="Oficial")
+        self.function=request.POST['function']
 
-        )
+        if self.function=="plus":
+            Homologacion.objects.create(
+                refer=referencia.objects.get(pk=self.pk),
+                profile=Profile.objects.get(pk=request.user.profile.pk),
+                tipo=tipo.objects.get(tipo="Oficial")
 
-        return redirect(self.get_success_url(self.pk))
+            )
+            return redirect(self.get_success_url_1(self.pk))
+
+        elif self.function=="delate":
+            referencia.objects.filter(pk=self.pk).delete()
+            return redirect(self.get_success_url_2())
+
+
+    def get_success_url_2(self):
+         return reverse('Homologaciones:consultar')
+
 
     # def form_valid(self, form):
     #     self.pk = self.request.pk
@@ -292,7 +305,7 @@ class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
         return super(Createreferencia, self).form_valid(form)
 
     def get_success_url(self):
-        return reverse('Homologaciones:detail', kwargs={ "pk": self.new_refer.pk})
+        return reverse('Homologaciones:consultar_terminal', kwargs={ "pk": self.new_refer.pk})
         #return render(request, 'Homologaciones/detail', 1)
 
     def get_context_data(self, **kwargs):
