@@ -25,7 +25,7 @@ class  HomologacionAdmin(admin.ModelAdmin):
 
 
     list_display =('pk','refer', 'profile', 'created',
-                    'modified', 'estado', 'tipo')
+                    'modified', 'resultado', 'estado', 'tipo')
 
 #     # list_display_links = ('pk')
 #

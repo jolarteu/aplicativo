@@ -52,6 +52,11 @@ class referencia(models.Model):
     def __str__(self):
         return (str(self.refer)+"_"+str(self.pais))
 
+    def get_object(self):
+        #obj= Homologacion.objects.filter(refer=self.pk).order_by('-id')
+        obj= str(Homologacion.objects.filter(refer=self.pk).order_by('-id')[0].estado)
+        return obj
+
 class Homologacion(models.Model):
     refer=models.ForeignKey(referencia, null=True,on_delete=models.CASCADE)
     profile=models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)

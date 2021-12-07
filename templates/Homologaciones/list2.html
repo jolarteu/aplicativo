@@ -8,6 +8,13 @@
 
 {% block container %}
 
+{% for recipe in object_list %}
+      {% for c in recipe.get_object %}
+            {{ c }}
+      {% endfor %}
+      (...)
+{% endfor %}
+
 <div class="container-fluid">
     <div class="card card-default mr-5 ml-5 mt-4" >
 
@@ -42,6 +49,8 @@
                                   <i class="fas fa-eye fa"></i>
                                   </a>
                               </button>
+
+
                               <form  method='POST'>
                                 {% csrf_token %}
                               <input type='hidden' name='key' value="{{c.pk}}">
@@ -50,7 +59,8 @@
                               <i class="fas fa-plus-square fa-lg"></i>
                               </button>
                               </form>
-                              <form  method='POST'>
+                              <form  method='POST'   enctype="multipart/form-data"
+                              onsubmit="return confirm('Recuerde que se eliminaran todas las homologaciones asociadas a este terminal, este proceso no es reversible ');">
                                 {% csrf_token %}
                                 <input type='hidden' name='key' value="{{c.pk}}">
                                 <input type='hidden' name='function' value="delete">
@@ -80,13 +90,17 @@
               {% include "spanish.html" %}
               ,"scrollY":    "400px",
               "scrollCollapse": true,
+              "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-2'i><'border border-bottom col-sm-12 col-md-1'B><'col-sm-12 col-md-9'p>>",
+             "buttons": [ 'excel'],
 
-
-           }
-
-            );
+           });
         } );
 
+
       </script>
+
+
 
       {% endblock %}
