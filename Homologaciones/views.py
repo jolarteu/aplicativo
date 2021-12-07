@@ -80,6 +80,15 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         lista=[(lista[i].pk, lista[i]) for i in range(len(lista))]
         return lista
 
+    def autollenado(lista, self, **kwargs):
+        self.obj = super().get_object()
+        try:
+            auto=atributo_elemento_h.objects.filter(Homologacion=self.obj , atributo=lista).last().valor
+        except:
+            auto=""
+
+        return(str(lista.id_atributo))
+
     def contexto(self, **kwargs):
         pass
         return self.formset
@@ -93,6 +102,7 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         for i in range(self.cantidad()):
             formset[i].fields['atributo'].choices = self.lista()
             formset[i].fields['atributo'].initial  = (self.lista()[i])[0]
+            formset[i].fields['valor'].initial=self.autollenado((self.lista()[i])[1])
 
         #formset[0].fields['atributo'].choices = [(1,4),(2,2),(3,3)]
     #    formset[0].fields['atributo'].choices = self.lista()
