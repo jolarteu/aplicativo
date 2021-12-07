@@ -26,7 +26,7 @@ class  DispositivosAdmin(admin.ModelAdmin):
 class  Dispositivo_adtributoAdmin(admin.ModelAdmin):
 
 
-    list_display =('id_dispositivo' , 'id_atributo')
+    list_display =('pk','id_dispositivo' , 'id_atributo')
 
     # list_display_links = ('pk')
 

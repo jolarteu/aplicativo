@@ -22,6 +22,7 @@
                       <th scope="col" style="width: 15%;">creacion</th>
                       <th scope="col" style="width: 15%;">estado</th>
                       <th scope="col" style="width: 15%;">tipo</th>
+                      <th scope="col" style="width: 15%;">SW</th>
                       <th scope="col" style="width: 15%;">opciones</th>
 
                   </tr>
@@ -35,6 +36,7 @@
                           <td>{{ c.created }}</td>
                           <td>{{ c.estado}}</td>
                           <td>{{ c.tipo}}</td>
+                          <td>{{ c.get_object}}</td>
 
 
                           <td>
@@ -75,6 +77,11 @@
               {% include "spanish.html" %}
               ,"scrollY":    "400px",
               "scrollCollapse": true,
+              "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-2'i><'border border-bottom col-sm-12 col-md-1'B><'col-sm-12 col-md-9'p>>",
+             "buttons": [ 'excel'],
+
 
 
            }

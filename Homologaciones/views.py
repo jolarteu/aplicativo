@@ -250,6 +250,10 @@ class CategoryListView(LoginRequiredMixin, ListView):
         # return reverse('Homologaciones:consultar_terminal/'+pk)
         return reverse('Homologaciones:consultar_terminal',kwargs={'pk': pk})           #asi se redirige bien :)
 
+    def get_success_url_3(self, pk):
+        # return reverse('Homologaciones:consultar_terminal/'+pk)
+        return reverse('Homologaciones:terminar',kwargs={'pk': pk})           #asi se redirige bien :)
+
 
     def post(self, request):
         self.pk=request.POST['key']
@@ -267,6 +271,10 @@ class CategoryListView(LoginRequiredMixin, ListView):
         elif self.function=="delete":
             referencia.objects.filter(pk=self.pk).delete()
             return redirect(self.get_success_url_2())
+
+        elif self.function=="see":
+            Homologacion_t=Homologacion.objects.filter(refer=self.pk).last().pk
+            return redirect(self.get_success_url_3(Homologacion_t))
 
 
     def get_success_url_2(self):

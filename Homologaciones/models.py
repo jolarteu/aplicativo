@@ -70,12 +70,33 @@ class Homologacion(models.Model):
     def __str__(self):
         return str(self.refer)+"_"+str(self.pk)
 
+    def get_object(self):
+
+        referencia_b=referencia.objects.filter(id_referencia=self.refer.pk).first().id_dispositivo
+
+        try:
+            atributo_b=dispositivo_atributo.objects.filter(id_atributo=7, id_dispositivo=referencia_b)[0]
+        except :
+            return ""
+        #
+        # #obj= Homologacion.objects.filter(refer=self.pk).order_by('-id')
+
+        try:
+            obj= str(atributo_elemento_h.objects.filter(Homologacion=self.pk, atributo=atributo_b).last().valor)
+        except:
+            obj=""
+
+        return obj
+
 class atributo_elemento_h(models.Model):
     atributo=models.ForeignKey(dispositivo_atributo, on_delete=models.CASCADE)
     Homologacion=models.ForeignKey(Homologacion, on_delete=models.CASCADE)
     valor=models.CharField(max_length=200, blank=True)
     document= models.FileField(upload_to='homologacion/files', blank=True)
     profile= models.ForeignKey(Profile, null=True, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return str(self.atributo)+": "+str(self.valor)
 
 
 def crear_homologacion(sender, instance, **kwargs):
