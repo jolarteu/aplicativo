@@ -54,8 +54,10 @@ class referencia(models.Model):
 
     def get_object(self):
         #obj= Homologacion.objects.filter(refer=self.pk).order_by('-id')
-        obj= str(Homologacion.objects.filter(refer=self.pk).order_by('-id')[0].estado)
-
+        try:
+            obj= str(Homologacion.objects.filter(refer=self.pk).order_by('-id')[0].estado)
+        except:
+            obj=""
         return obj
 
 class Homologacion(models.Model):

@@ -16,7 +16,7 @@ class  referenciaAdmin(admin.ModelAdmin):
 class  referenciaAdmin(admin.ModelAdmin):
 
 
-    list_display =('atributo', 'Homologacion',  'valor', 'document',
+    list_display =('pk', 'atributo', 'Homologacion',  'valor', 'document',
                     'profile')
 
 

@@ -80,14 +80,16 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         lista=[(lista[i].pk, lista[i]) for i in range(len(lista))]
         return lista
 
-    def autollenado(lista, self, **kwargs):
+    def autollenado(self, i, **kwargs):
+
+        lista=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo())
         self.obj = super().get_object()
         try:
-            auto=atributo_elemento_h.objects.filter(Homologacion=self.obj , atributo=lista).last().valor
+            auto=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=self.obj).last().valor
         except:
             auto=""
 
-        return(str(lista.id_atributo))
+        return(str(auto))                  ####revisar
 
     def contexto(self, **kwargs):
         pass
@@ -102,7 +104,8 @@ class  Homologacion_terminar(DetailView ,UpdateView):
         for i in range(self.cantidad()):
             formset[i].fields['atributo'].choices = self.lista()
             formset[i].fields['atributo'].initial  = (self.lista()[i])[0]
-            formset[i].fields['valor'].initial=self.autollenado((self.lista()[i])[1])
+            formset[i].fields['valor'].initial=self.autollenado(i)
+            #formset[i].fields['valor'].initial=(self.lista()[i])[1]
 
         #formset[0].fields['atributo'].choices = [(1,4),(2,2),(3,3)]
     #    formset[0].fields['atributo'].choices = self.lista()
@@ -223,7 +226,7 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         context['comparar']=estado.objects.get(pk='En curso')
         context['title'] = 'Lista homologaciones'
-        context['object_list']=Homologacion.objects.filter(refer=self.obj.pk)
+        context['object_list']=Homologacion.objects.filter(refer=self.obj.pk).order_by('id')
         return context          #ver homologaciones de cadad terminal
 
 class detalles_homologacionDetailview(LoginRequiredMixin, DetailView):
@@ -236,10 +239,22 @@ class detalles_homologacionDetailview(LoginRequiredMixin, DetailView):
         self.obj = super().get_object()
         return self.obj
 
+    def obtener_dispositivo(self, *args, **kwargs):
+        self.obj=self.get_object()
+        self.refer=referencia.objects.get(pk=self.obj.refer.pk)
+        self.dispositivo=dispositivo_id.objects.get(pk=self.refer.id_dispositivo.pk)
+        return self.dispositivo
+
+    def cantidad(self, **kwargs):
+        extra=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo()).count()
+        return extra
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = Homologacion.objects.filter(pk=self.obj.pk)
-        context['object_list']=atributo_elemento_h.objects.filter(Homologacion=self.obj.pk)
+        cantidad=atributo_elemento_h.objects.filter(Homologacion=self.obj.pk).distinct('atributo').count()
+        #context['object_list']=atributo_elemento_h.objects.filter(Homologacion=self.obj.pk).order_by('-id').distinct('atributo')
+        context['object_list']=atributo_elemento_h.objects.filter(Homologacion=self.obj.pk).order_by('-id')[:cantidad]
 
         return context          #ver homologaciones de cadad terminal           #lista de atributos
 
