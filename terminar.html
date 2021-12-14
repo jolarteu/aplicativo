@@ -1,0 +1,42 @@
+
+
+{% extends 'base.html' %}
+
+{% block head_content %}
+
+    <title> {{title}} </title>
+
+{% endblock %}
+
+{% block container %}
+
+<div class="container">
+    <div class="row justify-content-md-center">
+        <div class="col-8 pt-3 pb-3" id="profile-box">
+            <h4 class="mb-4 text-center">Rellena los datos!</h4>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                  {{ formset.management_form }}
+                  {% for f in formset %}
+                  <br>
+                    {% for i in f %}
+                       {{ i}}
+                    {% endfor %}
+                      <br/>
+                    {% endfor %}
+                        <br>
+                        {{ form.as_p }}
+                        <br/>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block mt-5">Publish!</button>
+
+                </form>
+
+        </div>
+    </div>
+
+</div>
+
+  {% endblock %}

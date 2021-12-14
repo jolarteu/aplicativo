@@ -22,6 +22,13 @@ from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, Ref
 from django.http import HttpResponseRedirect
 from Users.models import Profile
 from django.contrib.auth.models import User
+import io
+from django.http import FileResponse
+from PyPDF2 import PdfFileWriter, PdfFileReader
+import io
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+import docx
 
 
 @login_required()
@@ -84,10 +91,22 @@ class  Homologacion_terminar(DetailView ,UpdateView):
 
         lista=dispositivo_atributo.objects.filter(id_dispositivo=self.obtener_dispositivo())
         self.obj = super().get_object()
-        try:
-            auto=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=self.obj).last().valor
-        except:
-            auto=""
+        cantidad=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=self.obj).count()
+        if cantidad==0:
+            try:
+                busqueda=Homologacion.objects.filter(refer=self.obj.refer).order_by('-id')[1]
+                auto=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=busqueda).last().valor
+
+            except:auto="aaa"
+        else:
+            try:
+                auto=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=self.obj).last().valor
+            except:
+                auto=""
+        # else:
+        #     try:auto=Homologacion.objects.filter(refer=self.obj.refer)
+        #     except:
+        #         auto="aaa"
 
         return(str(auto))                  ####revisar
 
@@ -229,6 +248,47 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
         context['object_list']=Homologacion.objects.filter(refer=self.obj.pk).order_by('id')
         return context          #ver homologaciones de cadad terminal
 
+    def post(self, request, pk):
+        pk=request.POST['key']
+
+        buffer = io.BytesIO()
+
+        # Create the PDF object, using the buffer as its "file."
+        p = canvas.Canvas(buffer)
+
+        # Draw things on the PDF. Here's where the PDF generation happens.
+        # See the ReportLab documentation for the full list of functionality.
+        p.drawString(100, 100, "Hello world.")
+
+        # Close the PDF object cleanly, and we're done.
+        p.showPage()
+        p.save()
+
+        # FileResponse sets the Content-Disposition header so that browsers
+        # present the option to save the file.
+        buffer.seek(0)
+        new_pdf = PdfFileReader(buffer)
+        existing_pdf = PdfFileReader(open("original.pdf", "rb"))
+        output = PdfFileWriter()
+
+        page = existing_pdf.getPage(0)
+        page.mergePage(new_pdf.getPage(0))
+        output.addPage(page)
+        #
+        outputStream = open("destination.pdf", "wb")
+        output.write(outputStream)
+        outputStream.close()
+
+        return FileResponse(open('destination.pdf', 'rb'), as_attachment=True, filename='hello.pdf')
+        #return FileResponse(response, as_attachment=True, filename='hello.pdf')
+#        return redirect(self.get_success_url_1(self.pk))
+
+
+
+
+    def get_success_url_2(self):
+         return reverse('Homologaciones:consultar')
+
 class detalles_homologacionDetailview(LoginRequiredMixin, DetailView):
     model = atributo_elemento_h
     template_name = 'Homologaciones/detalles_homologacion.html'
@@ -315,7 +375,6 @@ class CategoryListView(LoginRequiredMixin, ListView):
     #               tipo=tipo.objects.get(tipo="Oficial")
     #     )
     #     return redirect(self.get_success_url())
-
 
 class Createreferencia(LoginRequiredMixin,SuccessMessageMixin, CreateView):
 

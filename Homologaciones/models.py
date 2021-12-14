@@ -77,7 +77,7 @@ class Homologacion(models.Model):
         referencia_b=referencia.objects.filter(id_referencia=self.refer.pk).first().id_dispositivo
 
         try:
-            atributo_b=dispositivo_atributo.objects.filter(id_atributo=7, id_dispositivo=referencia_b)[0]
+            atributo_b=dispositivo_atributo.objects.filter(id_atributo=7, id_dispositivo=referencia_b)[0]       #revisar atributo 7
         except :
             return ""
         #
