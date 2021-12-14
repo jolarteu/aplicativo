@@ -29,7 +29,7 @@ import io
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 import docx
-
+from datetime import date
 
 @login_required()
 def home(request):
@@ -249,45 +249,47 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
         return context          #ver homologaciones de cadad terminal
 
     def post(self, request, pk):
+        today = date.today()
         pk=request.POST['key']
-
-        buffer = io.BytesIO()
-
-        # Create the PDF object, using the buffer as its "file."
-        p = canvas.Canvas(buffer)
-
-        # Draw things on the PDF. Here's where the PDF generation happens.
-        # See the ReportLab documentation for the full list of functionality.
-        p.drawString(100, 100, "Hello world.")
-
-        # Close the PDF object cleanly, and we're done.
-        p.showPage()
-        p.save()
-
-        # FileResponse sets the Content-Disposition header so that browsers
-        # present the option to save the file.
-        buffer.seek(0)
-        new_pdf = PdfFileReader(buffer)
-        existing_pdf = PdfFileReader(open("original.pdf", "rb"))
-        output = PdfFileWriter()
-
-        page = existing_pdf.getPage(0)
-        page.mergePage(new_pdf.getPage(0))
-        output.addPage(page)
+        doc = docx.Document('original.docx')
+        #doc.paragraphs[5]="holiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"
+        doc.paragraphs[0].text =pk
+        doc.paragraphs[1].text ="Today's date:"+ str(today)
+        doc.add_paragraph('Hello world!')
+        doc.save('salida.docx')
+        # buffer = io.BytesIO()
         #
-        outputStream = open("destination.pdf", "wb")
-        output.write(outputStream)
-        outputStream.close()
+        # # Create the PDF object, using the buffer as its "file."
+        # p = canvas.Canvas(buffer)
+        #
+        # # Draw things on the PDF. Here's where the PDF generation happens.
+        # # See the ReportLab documentation for the full list of functionality.
+        # p.drawString(100, 100, "Hello world.")
+        #
+        # # Close the PDF object cleanly, and we're done.
+        # p.showPage()
+        # p.save()
+        #
+        # # FileResponse sets the Content-Disposition header so that browsers
+        # # present the option to save the file.
+        # buffer.seek(0)
+        # new_pdf = PdfFileReader(buffer)
+        # existing_pdf = PdfFileReader(open("original.pdf", "rb"))
+        # output = PdfFileWriter()
+        #
+        # page = existing_pdf.getPage(0)
+        # page.mergePage(new_pdf.getPage(0))
+        # output.addPage(page)
+        # #
+        # outputStream = open("destination.pdf", "wb")
+        # output.write(outputStream)
+        # outputStream.close()
 
-        return FileResponse(open('destination.pdf', 'rb'), as_attachment=True, filename='hello.pdf')
+        return FileResponse(open('salida.docx', 'rb'), as_attachment=True, filename='hello.pdf')
         #return FileResponse(response, as_attachment=True, filename='hello.pdf')
 #        return redirect(self.get_success_url_1(self.pk))
 
 
-
-
-    def get_success_url_2(self):
-         return reverse('Homologaciones:consultar')
 
 class detalles_homologacionDetailview(LoginRequiredMixin, DetailView):
     model = atributo_elemento_h
