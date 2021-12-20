@@ -22,10 +22,11 @@
             <table class="table" id="table_prueba">
                 <thead>
                   <tr>
-                      <th scope="col" style="width: 10%;">Referencia</th>
+                      <th scope="col" style="width: 15%;">Referencia</th>
                       <th scope="col" style="width: 15%;">Nombre</th>
-                      <th scope="col" style="width: 10%;">Creador</th>
-                      <th scope="col" style="width: 10%;">Pais</th>
+                      <th scope="col" style="width: 15%;">fabricante</th>
+                      <th scope="col" style="width: 15%;">Creador</th>
+                      <th scope="col" style="width: 15%;">Pais</th>
                       <th scope="col" style="width: 15%;">Creacion</th>
                       <th scope="col" style="width: 10%;">Homologaciones</th>
 
@@ -39,6 +40,7 @@
 
                           <td>{{ c.refer }}</td>
                           <td>{{ c.name }}</td>
+                          <td>{{ c.fabricante }}</td>
                           <td>{{ c.profile }}</td>
                           <td>{{ c.pais }}</td>
                           <td>{{ c.created }}</td>
@@ -98,7 +100,7 @@
             $('#table_prueba').DataTable(
             {
               {% include "spanish.html" %}
-              ,"scrollY":    "400px",
+              ,"scrollY":    "500px",
               "scrollCollapse": true,
               "dom": "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                 "<'row'<'col-sm-12'tr>>" +

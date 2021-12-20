@@ -13,7 +13,8 @@ class  referenciaAdmin(admin.ModelAdmin):
 @admin.register(pais)
 class  paisAdmin(admin.ModelAdmin):
 
-    list_display =('pk','pais', 'created')
+    list_display =('pk', 'capital','pais', 'created')
+    list_editable = ('capital',)
 
 
 

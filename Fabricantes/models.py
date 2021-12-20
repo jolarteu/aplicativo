@@ -5,6 +5,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 
 class pais(models.Model):
     pais = models.CharField(max_length=50, blank=False, primary_key=True)
+    capital=models.CharField(max_length=50,null=True)
     created= models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
