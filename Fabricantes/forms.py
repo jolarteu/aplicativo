@@ -17,4 +17,11 @@ class FabricantesPaisUpdate(forms.ModelForm):
     class Meta:
 
         model = fabricante_pais
-        fields = ['representante', 'numero', 'email']
+        fields = ['representante','numero', 'email']
+
+class FabricantesPaisForm(forms.ModelForm):
+
+    class Meta:
+
+        model = fabricante_pais
+        fields = ['representante','pais', 'numero', 'email']

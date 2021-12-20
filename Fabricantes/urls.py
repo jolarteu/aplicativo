@@ -32,4 +32,9 @@ urlpatterns = [
             view = views.FabricantePaisUpdate.as_view(),
             name='Update_fabricante'
         ),
+        path(
+            route = 'nuevo_representante/<slug:pk>',
+            view = views.CreateFabricantePais.as_view(),
+            name='Create_represtante'
+        ),
 ]

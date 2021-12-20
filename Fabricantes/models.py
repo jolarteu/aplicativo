@@ -22,9 +22,9 @@ class fabricante(models.Model):
 class fabricante_pais(models.Model):
     fabricante=models.ForeignKey(fabricante, on_delete=models.CASCADE)
     pais=models.ForeignKey(pais, on_delete=models.CASCADE)
-    representante=models.CharField(max_length=200, blank=False)
-    numero=PhoneNumberField(null=False, blank=False, unique=True)
-    email=models.EmailField()
+    representante=models.CharField(max_length=200, blank=False, null=True)
+    numero=PhoneNumberField( null=True, blank=False)
+    email=models.EmailField(null=True, blank=False)
 
     def __str__(self):
         return (str(self.fabricante)+" "+str(self.pais))
