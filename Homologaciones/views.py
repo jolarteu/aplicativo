@@ -10,12 +10,12 @@ from django import forms
 # from post.forms import PostForm
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse
-from Homologaciones.models import Homologacion, pais, fabricante, tipo, referencia, estado, resultado, atributo_elemento_h
+from Homologaciones.models import Homologacion, pais, fabricante, tipo, referencia, estado, resultado, atributo_elemento_h, fabricante_pais
 from Homologaciones.forms import paisForm
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from Dispositivos.models import dispositivo as dispositivo_id
-from Dispositivos.models import dispositivo_atributo
+from Dispositivos.models import dispositivo_atributo, atributo
 from django.views.generic.edit import FormMixin
 from Homologaciones.forms import  HomologacionForm, atributo_elemento_hForm, ReferenciaForms, paisForm, HomologacionUpdateForm
 # Create your views here.
@@ -97,7 +97,7 @@ class  Homologacion_terminar(DetailView ,UpdateView):
                 busqueda=Homologacion.objects.filter(refer=self.obj.refer).order_by('-id')[1]
                 auto=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=busqueda).last().valor
 
-            except:auto="aaa"
+            except:auto=""
         else:
             try:
                 auto=atributo_elemento_h.objects.filter(atributo=lista[i], Homologacion=self.obj).last().valor
@@ -248,21 +248,104 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
         context['object_list']=Homologacion.objects.filter(refer=self.obj.pk).order_by('id')
         return context          #ver homologaciones de cadad terminal
 
+    def version_sw(self, pk, ref):
+        atri_busqueda=atributo.objects.filter(name="SW").order_by('-id')[0]
+        atri_busqueda_2=dispositivo_atributo.objects.get(id_dispositivo=ref.id_dispositivo,id_atributo_id=atri_busqueda)
+        atri=atributo_elemento_h.objects.filter(Homologacion=pk, atributo=atri_busqueda_2).order_by('-id')[0]
+        #dis=dispositivo_id.objects.get(pk=ref.id_dispositivo)
+
+        return str(atri.valor)
+
+    def version_os(self, pk, ref):
+        atri_busqueda=atributo.objects.filter(name="Sistema operativo").order_by('-id')[0]
+        atri_busqueda_2=dispositivo_atributo.objects.get(id_dispositivo=ref.id_dispositivo,id_atributo_id=atri_busqueda)
+        atri=atributo_elemento_h.objects.filter(Homologacion=pk, atributo=atri_busqueda_2).order_by('-id')[0]
+        #dis=dispositivo_id.objects.get(pk=ref.id_dispositivo)
+
+        return str(atri.valor)
+
+    def version_per(self, pk, ref):
+        atri_busqueda=atributo.objects.filter(name="Personalizacion").order_by('-id')[0]
+        atri_busqueda_2=dispositivo_atributo.objects.get(id_dispositivo=ref.id_dispositivo,id_atributo_id=atri_busqueda)
+        atri=atributo_elemento_h.objects.filter(Homologacion=pk, atributo=atri_busqueda_2).order_by('-id')[0]
+        #dis=dispositivo_id.objects.get(pk=ref.id_dispositivo)
+
+        return str(atri.valor)
+
+    def dual_sim(self, pk, ref):
+        atri_busqueda=atributo.objects.filter(name="Dual sim").order_by('-id')[0]
+        atri_busqueda_2=dispositivo_atributo.objects.get(id_dispositivo=ref.id_dispositivo,id_atributo_id=atri_busqueda)
+        atri=atributo_elemento_h.objects.filter(Homologacion=pk, atributo=atri_busqueda_2).order_by('-id')[0]
+        #dis=dispositivo_id.objects.get(pk=ref.id_dispositivo)
+        if str(atri.valor)=="SI" or str(atri.valor)=="si" or str(atri.valor)=="x" or str(atri.valor)=="X":
+            return "Es dual Sim"
+        else:
+            return "Es singel Sim"
+
+    def perso(self, pk, ref):
+        atri_busqueda=atributo.objects.filter(name="Personalizacion").order_by('-id')[0]
+        atri_busqueda_2=dispositivo_atributo.objects.get(id_dispositivo=ref.id_dispositivo,id_atributo_id=atri_busqueda)
+        atri=atributo_elemento_h.objects.filter(Homologacion=pk, atributo=atri_busqueda_2).order_by('-id')[0]
+        #dis=dispositivo_id.objects.get(pk=ref.id_dispositivo)
+        if str(atri.valor)=="open" or str(atri.valor)=="OPEN" or str(atri.valor)=="Openla" or str(atri.valor)=="No" or str(atri.valor)=="NO" or str(atri.valor)=="No" or str(atri.valor)=="no":
+            return "No cuenta con Personalizacion de Movistar"
+        else:
+            return "descarga la customización de Movistar "
+
     def post(self, request, pk):
         today = date.today()
         pk=request.POST['key']
-        doc = docx.Document('original.docx')
-        #doc.paragraphs[5]="holiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii"
-        doc.paragraphs[0].text =pk
-        doc.paragraphs[1].text ="Today's date:"+ str(today)
-        doc.add_paragraph('Hello world!')
+        object=self.get_object()
+        ref=referencia.objects.filter(refer=object.refer).order_by('-pk')[0]
+
+        pais_busqueda=pais.objects.filter(pk=ref.pais).order_by('-pk')[0]
+        fabri=fabricante.objects.filter(pk=ref.fabricante).order_by('-pk')[0]
+        Nombre=fabricante_pais.objects.filter(pais=pais_busqueda, fabricante=fabri).order_by('-id')[0]
+        doc = docx.Document('original_vacio.docx')
+        doc.add_paragraph(str(pais_busqueda.capital)+", "+str(today)+"\n\n"+"Señor(a)")
+        doc.add_paragraph(str(Nombre.representante))
+        doc.add_paragraph(str(fabri)+" "+str(pais_busqueda))
+        doc.add_paragraph(str(pais_busqueda.capital)+"\n\n")
+        doc.add_paragraph("Asunto: Aprobación Técnica de el/la "+str(ref.id_dispositivo)+" "+ str(ref.refer )+" ("+str(ref.name)+")\n\n")
+        doc.add_paragraph("Luego de realizadas las pruebas de Ingeniería de RF, Conmutación y Usabilidad de la referencia: "+ str(ref.refer )+" ("+str(ref.name)+")\n\n")
+
+        doc.add_paragraph('Versión Firmware/Software: '+self.version_sw(pk, ref),
+                  style='Estilo4')
+        doc.add_paragraph('Versión Personalización: '+self.version_per(pk, ref),
+                  style='Estilo4')
+        doc.add_paragraph('Sistema Operativo: '+self.version_os(pk, ref),
+                  style='Estilo4')
+
+        doc.add_paragraph('\nSe da concepto de APROBACIÓN de este terminal en la red 2G/3G/4G de Telefónica Móviles Colombia. se hacen las siguientes aclaraciones sobre los resultados del proceso de homologación de este modelo:',
+                  )
+
+        doc.add_paragraph('Son terminales para navegación WEB',
+                style='Estilo4')
+        doc.add_paragraph('Los terminales tienen funcionamiento ALWAYS ON.',
+                style='Estilo4')
+        doc.add_paragraph('Son terminales para navegación WEB',
+                style='Estilo4')
+        doc.add_paragraph(self.dual_sim(pk, ref),
+                style='Estilo4')
+        doc.add_paragraph(self.perso(pk, ref),
+                style='Estilo4')
+
+        doc.add_paragraph('\nBugs en revisión, se espera sean resueltos en la próxima versión de mantenimiento')
+
+        x=" debe entregar los certificados que sean requeridos de manera global, regional y local que estén pendientes por recibir. Así mismo debe garantizar que la información plasmada en las fichas técnicas enviadas sea real y no tenga ningún error."
+        x2="""Como es habitual, continuaremos con el proceso de pruebas sobre los lotes de producción para verificar la eliminación SIM LOCK y el cumplimiento de las condiciones de configuración evaluadas. La omisión de estos requerimientos será motivo de devolución de los terminales. Por lo tanto y teniendo en cuenta los puntos que están descritos, se aprueba la comercialización de esta referencia de terminal con la versión de software menciona, sobre la red de Movistar Colombia.
+                \nCordialmente, Oscar José Carvajal
+                \nJefe de Homologación de Terminales Móviles"""
+
+        doc.add_paragraph('\n'+str(fabri)+x)
+        doc.add_paragraph('\n'+str(fabri)+x2)
+
+        # doc.add_paragraph('Hello world!')
         doc.save('salida.docx')
-        # buffer = io.BytesIO()
+
+        # # buffer = io.BytesIO()
         #
-        # # Create the PDF object, using the buffer as its "file."
-        # p = canvas.Canvas(buffer)
         #
-        # # Draw things on the PDF. Here's where the PDF generation happens.
         # # See the ReportLab documentation for the full list of functionality.
         # p.drawString(100, 100, "Hello world.")
         #
@@ -285,7 +368,7 @@ class HomologacionListView(LoginRequiredMixin, DetailView):
         # output.write(outputStream)
         # outputStream.close()
 
-        return FileResponse(open('salida.docx', 'rb'), as_attachment=True, filename='hello.pdf')
+        return FileResponse(open('salida.docx', 'rb'), as_attachment=True, filename='hello.docx')
         #return FileResponse(response, as_attachment=True, filename='hello.pdf')
 #        return redirect(self.get_success_url_1(self.pk))
 

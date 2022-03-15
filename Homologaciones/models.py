@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from Dispositivos.models import dispositivo, dispositivo_atributo
 from Users.models import Profile
 from django.db.models.signals import post_save
-from Fabricantes.models import fabricante, pais
+from Fabricantes.models import fabricante, pais, fabricante_pais
 
 
 
